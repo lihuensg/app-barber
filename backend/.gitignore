@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+.env
+dist/
+build/
+.cache/
+.vscode/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs
+.idea/
+.DS_Store
+
+# Coverage
+coverage/
+
+# Others
+*.env.*
+.env.local
+.env.production
+.env.development
+
+# Scripts
+crearAdmin.ts
