@@ -1,0 +1,132 @@
+.turnos-overlay {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 1000px;
+  margin-top: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+
+  h2 {
+    text-align: center;
+    color: #eba1a1;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.dia-turno {
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.07);
+  padding: 1rem;
+
+  .dia-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: #fff;
+    }
+
+    .flecha {
+      transition: transform 0.3s ease;
+      &.abierto {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .turnos-lista {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    opacity: 0;
+    padding: 0;
+
+    &.expandido {
+      max-height: 1000px;
+      opacity: 1;
+      padding-top: 1rem;
+    }
+
+   .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        column-gap: 3rem;  
+        row-gap: 1.5rem;   
+        }
+
+    .col-turno {
+      flex: 0 0 200px;
+      max-width: 200px;
+    }
+
+    .turno-card {
+      background-color: rgba(255, 255, 255, 0.12);
+      border: 1px solid #ffffff33;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;  
+
+      p {
+        margin: 0 0 0.5rem;
+        font-weight: bold;
+        color: #fff;
+        font-size: 1.2rem;
+      }
+
+      .reservar-btn {
+        border: 1px solid #fff;
+        background: transparent;
+        color: #fff;
+        padding: 0.4rem 1rem;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #fff;
+          color: #000;
+        }
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+      }
+    }
+  }
+}
+
+/* 🔧 Responsive */
+@media (max-width: 768px) {
+  .turnos-overlay h2 {
+    font-size: 1.6rem;
+  }
+
+  .dia-turno .dia-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .col-turno {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .turno-card p {
+    font-size: 1rem;
+  }
+}

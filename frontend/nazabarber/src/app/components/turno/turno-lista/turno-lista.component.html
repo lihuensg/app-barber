@@ -1,0 +1,27 @@
+<section class="turnos-overlay text-white text-center">
+  <h2 class="mb-4">Turnos disponibles</h2>
+
+  <div *ngFor="let dia of diasOrdenados" class="dia-turno">
+    <div class="dia-header" (click)="dia.expandido = !dia.expandido">
+      <h3>{{ dia.nombre }} ({{ dia.fechaFormateada }})</h3>
+      <span class="flecha" [class.abierto]="dia.expandido">▼</span>
+    </div>
+
+    <div class="turnos-lista" [class.expandido]="dia.expandido">
+      <div class="row">
+        <div class="col-turno" *ngFor="let turno of turnosPorDia[dia.fecha]">
+          <div class="turno-card">
+            <p>{{ turno.hora }}</p>
+            <button class="reservar-btn" (click)="reservar.emit(turno)">
+              Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
