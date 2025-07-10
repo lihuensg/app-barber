@@ -1,16 +1,12 @@
 .turnos-overlay {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(6px);
   border-radius: 12px;
   padding: 2rem 1rem;
   width: 100%;
   max-width: 1000px;
   margin-top: 2rem;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
 
   h2 {
     text-align: center;
-    color: #eba1a1;
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 2rem;
@@ -18,106 +14,192 @@
   }
 }
 
+/* Estilo base compartido */
 .dia-turno {
   margin-bottom: 2rem;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.07);
   padding: 1rem;
+}
+
+.dia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+
+  h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  .flecha {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    margin-left: 1rem;
+
+    &.abierto {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.turnos-lista {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  opacity: 0;
+  padding: 0;
+
+  &.expandido {
+    max-height: 2000px; // aumentado para evitar cortes
+    opacity: 1;
+    padding-top: 1rem;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 3rem;
+    row-gap: 1.5rem;
+  }
+
+  .col-turno {
+    flex: 0 0 200px;
+    max-width: 200px;
+  }
+}
+
+.turno-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    border: 1px solid currentColor;
+    background: transparent;
+    transition: 0.3s;
+    cursor: pointer;
+    margin: 0.2rem;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Modo oscuro */
+.turnos-overlay.modo-oscuro {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  color: white;
+
+  h2 {
+    color: #eba1a1;
+  }
+
+  .dia-turno {
+    background-color: rgba(255, 255, 255, 0.07);
+  }
 
   .dia-header {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
 
-    h3 {
-      margin: 0;
-      font-size: 1.4rem;
+    h3, .flecha {
       color: #fff;
-    }
-
-    .flecha {
-      transition: transform 0.3s ease;
-      &.abierto {
-        transform: rotate(180deg);
-      }
     }
   }
 
-  .turnos-lista {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-    opacity: 0;
-    padding: 0;
+  .turno-card {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff33;
+    color: white;
 
-    &.expandido {
-      max-height: 1000px;
-      opacity: 1;
-      padding-top: 1rem;
+    p {
+      color: #fff;
     }
 
-   .row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        column-gap: 3rem;  
-        row-gap: 1.5rem;   
-        }
-
-    .col-turno {
-      flex: 0 0 200px;
-      max-width: 200px;
-    }
-
-    .turno-card {
-      background-color: rgba(255, 255, 255, 0.12);
-      border: 1px solid #ffffff33;
-      padding: 1rem;
-      border-radius: 8px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;  
-
-      p {
-        margin: 0 0 0.5rem;
-        font-weight: bold;
-        color: #fff;
-        font-size: 1.2rem;
-      }
-
-      .reservar-btn {
-        border: 1px solid #fff;
-        background: transparent;
-        color: #fff;
-        padding: 0.4rem 1rem;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-
-        &:hover {
-          background-color: #fff;
-          color: #000;
-        }
-      }
+    button {
+      border: 1px solid #fff;
+      color: #fff;
 
       &:hover {
-        transform: translateY(-4px);
+        background-color: #fff;
+        color: #000;
       }
     }
   }
 }
 
-/* 🔧 Responsive */
+/* Modo claro */
+.turnos-overlay.modo-claro {
+  background: #fdfdfd;
+  color: #222;
+
+  h2 {
+    color: #222;
+  }
+
+  .dia-turno {
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+
+  .dia-header {
+    background-color: #f1f1f1;
+
+    h3, .flecha {
+      color: #222;
+    }
+  }
+
+  .turno-card {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    color: #222;
+
+    p {
+      color: #222;
+    }
+
+    button {
+      border: 1px solid #222;
+      color: #222;
+
+      &:hover {
+        background-color: #222;
+        color: #fff;
+      }
+    }
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .turnos-overlay h2 {
     font-size: 1.6rem;
   }
 
-  .dia-turno .dia-header h3 {
+  .dia-header h3 {
     font-size: 1.2rem;
   }
 

@@ -5,7 +5,8 @@ import {  reservarTurnoAnonimo,
           generarTurnosAutomaticos,
           actualizarTurno,
           eliminarTurno,
-          obtenerUltimosTurnos
+          obtenerHistorialDeTurnos,
+          cancelarTurno
         } from '../controllers/turno.controller.js';
 import { check } from 'express-validator';
 import { validarCampos } from '../middlewares/validarCampos.js';
@@ -71,7 +72,12 @@ router.put(
 // Admin elimina un turno
 router.delete('/:id', [validarToken, esAdmin], eliminarTurno);
 
-// Obtener los últimos turnos reservados
-router.get('/ultimos', [validarToken, esAdmin], obtenerUltimosTurnos);
+router.get(
+  '/historial',
+  [validarToken, esAdmin],
+  obtenerHistorialDeTurnos
+);
+
+router.put('/cancelar/:id', [validarToken, esAdmin], cancelarTurno);
 
 export default router;

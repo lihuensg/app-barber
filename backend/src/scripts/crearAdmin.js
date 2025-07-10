@@ -7,7 +7,7 @@ const crearAdmin = async () => {
     await sequelize.authenticate(); // Asegura conexión
     await sequelize.sync(); // Solo si no tenés migraciones
     const yaExiste = await Usuario.findOne({ where: { email: 'admin@barber.com' } });
-    if (yaExiste) return console.log('⚠️ Admin ya existe');
+    if (yaExiste) return console.log(' Admin ya existe');
 
     const hash = await bcrypt.hash('admin123', 10);
 
@@ -19,7 +19,7 @@ const crearAdmin = async () => {
       rol: 'admin'
     });
 
-    console.log('✅ Admin creado');
+    console.log('Admin creado');
   } catch (error) {
     console.error('Error creando admin:', error);
   } finally {

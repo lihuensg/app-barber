@@ -1,1 +1,33 @@
-<p>admin-turnos works!</p>
+<div class="admin-turnos">
+  <h2>Gestión de Turnos</h2>
+
+  <!-- FORMULARIO CREAR TURNO -->
+  <form [formGroup]="formularioTurno" (ngSubmit)="crearTurno()" class="formulario-crear">
+    <h3>Crear Turno</h3>
+    <input type="date" formControlName="fecha" />
+    <input type="time" formControlName="hora" />
+    <button type="submit" [disabled]="formularioTurno.invalid">Crear</button>
+  </form>
+
+  <!-- LISTA DE TURNOS CON BOTONES EDITAR Y ELIMINAR -->
+  <app-turno-lista
+    [turnos]="turnos"
+    [editable]="true"
+    [claseEstilo]="'modo-claro'"
+    (editar)="onEditarTurno($event)"
+    (eliminar)="onEliminarTurno($event)"
+    (reservar)="solicitarTurno($event)"
+  >
+  </app-turno-lista>
+
+  <!-- FORMULARIO EDITAR TURNO -->
+  <div class="edicion-turno" *ngIf="modoEditar">
+    <h3>Editar Turno</h3>
+    <form [formGroup]="formularioEdicion" (ngSubmit)="editarTurno()">
+      <input type="date" formControlName="fecha" />
+      <input type="time" formControlName="hora" />
+      <button type="submit" [disabled]="formularioEdicion.invalid">Guardar cambios</button>
+      <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  </div>
+</div>

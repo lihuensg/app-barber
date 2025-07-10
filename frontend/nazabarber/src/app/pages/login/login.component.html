@@ -1,1 +1,37 @@
-<p>login works!</p>
+<div class="login-container">
+  <h2>Iniciar sesión</h2>
+
+  <form [formGroup]="form" (ngSubmit)="login()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="ejemplo@correo.com"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contrasena">Contraseña</label>
+      <input
+        id="contrasena"
+        type="password"
+        formControlName="contrasena"
+        placeholder="Tu contraseña"
+      />
+    </div>
+
+    <button class="btn mt-3" type="submit" [disabled]="form.invalid">Entrar</button>
+
+    <div *ngIf="error" class="alert alert-danger mt-3">
+      {{ error }}
+    </div>
+  </form>
+
+  <div class="crear-cuenta">
+    <p>¿No tenés cuenta?</p>
+    <button class="btn btn-outline-light" (click)="irACrearCuenta()">Crear cuenta</button>
+  </div>
+</div>
+  

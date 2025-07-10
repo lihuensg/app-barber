@@ -1,0 +1,187 @@
+.turnos-overlay {
+  border-radius: 12px;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto;
+
+  h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+}
+
+.turnos-overlay.modo-oscuro {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  color: white;
+
+  h2, h3 {
+    color: #eba1a1;
+  }
+
+  .dia-turno {
+    background-color: rgba(255, 255, 255, 0.07);
+  }
+
+  .dia-header {
+    background-color: rgba(255, 255, 255, 0.1);
+
+    h4 {
+      color: #fff;
+    }
+
+    .flecha {
+      color: #fff;
+    }
+  }
+
+  .turno-card {
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid #ffffff33;
+    color: white;
+
+    p {
+      color: #fff;
+    }
+  }
+}
+
+.turnos-overlay.modo-claro {
+  background: #f9f9f9;
+  color: #222;
+
+  h2, h3 {
+    color: #222;
+  }
+
+  .dia-turno {
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+
+  .dia-header {
+    background-color: #f1f1f1;
+
+    h4 {
+      color: #222;
+    }
+
+    .flecha {
+      color: #222;
+    }
+  }
+
+  .turno-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #222;
+
+    p {
+      color: #222;
+    }
+  }
+}
+
+.seccion-historial {
+  margin-bottom: 3rem;
+}
+
+.dia-turno {
+  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  padding: 1rem;
+
+  .dia-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+
+    h4 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .flecha {
+      transition: transform 0.3s ease;
+      &.abierto {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .turnos-lista {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    opacity: 0;
+    padding: 0;
+
+    &.expandido {
+      max-height: 1000px;
+      opacity: 1;
+      padding-top: 1rem;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      column-gap: 2rem;
+      row-gap: 1.5rem;
+    }
+
+    .col-turno {
+      flex: 0 0 220px;
+      max-width: 220px;
+    }
+
+    .turno-card {
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      p {
+        margin: 0.3rem 0;
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+      }
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .turnos-overlay h2 {
+    font-size: 1.6rem;
+  }
+
+  .dia-turno .dia-header h4 {
+    font-size: 1.1rem;
+  }
+
+  .col-turno {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .turno-card p {
+    font-size: 1rem;
+  }
+}

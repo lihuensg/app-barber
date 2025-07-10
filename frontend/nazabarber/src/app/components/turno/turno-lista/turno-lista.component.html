@@ -1,4 +1,4 @@
-<section class="turnos-overlay text-white text-center">
+<section class="turnos-overlay text-center" [ngClass]="claseEstilo">
   <h2 class="mb-4">Turnos disponibles</h2>
 
   <div *ngFor="let dia of diasOrdenados" class="dia-turno">
@@ -12,16 +12,12 @@
         <div class="col-turno" *ngFor="let turno of turnosPorDia[dia.fecha]">
           <div class="turno-card">
             <p>{{ turno.hora }}</p>
-            <button class="reservar-btn" (click)="reservar.emit(turno)">
-              Reservar
-            </button>
+            <button class="reservar-btn" (click)="reservar.emit(turno)">Reservar</button>
+            <button *ngIf="editable" class="editar-btn" (click)="editar.emit(turno)">✏️</button>
+            <button *ngIf="editable" class="eliminar-btn" (click)="eliminar.emit(turno)">🗑️</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-
-
-

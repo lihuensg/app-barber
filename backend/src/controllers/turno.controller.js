@@ -144,13 +144,83 @@ export const eliminarTurno = async (req, res) => {
   }
 };
 
-export const obtenerUltimosTurnos = async (req, res) => {
+export const obtenerHistorialDeTurnos = async (req, res) => {
   try {
-    const turnos = await Turno.findAll({
-      order: [['fecha', 'DESC'], ['hora', 'DESC']],
-      limit: 15
+    const ahora = new Date();
+    const cincoDiasAtras = new Date();
+    cincoDiasAtras.setDate(ahora.getDate() - 5);
+
+    // Turnos pasados: desde 5 días atrás hasta justo antes de ahora
+    const turnosPasados = await Turno.findAll({
+      where: {
+        estado: 'reservado',
+        [Op.or]: [
+          {
+            fecha: {
+              [Op.between]: [
+                cincoDiasAtras.toISOString().split('T')[0],
+                ahora.toISOString().split('T')[0]
+              ]
+            },
+            hora: {
+              [Op.lt]: ahora.toTimeString().split(' ')[0]
+            }
+          },
+          {
+            fecha: {
+              [Op.lt]: ahora.toISOString().split('T')[0]
+            }
+          }
+        ]
+      },
+      order: [['fecha', 'DESC'], ['hora', 'DESC']]
     });
-    res.status(200).json(turnos);
+
+    // Turnos futuros: desde ahora en adelante
+    const turnosFuturos = await Turno.findAll({
+      where: {
+        estado: 'reservado',
+        [Op.or]: [
+          {
+            fecha: ahora.toISOString().split('T')[0],
+            hora: {
+              [Op.gte]: ahora.toTimeString().split(' ')[0]
+            }
+          },
+          {
+            fecha: {
+              [Op.gt]: ahora.toISOString().split('T')[0]
+            }
+          }
+        ]
+      },
+      order: [['fecha', 'ASC'], ['hora', 'ASC']]
+    });
+
+    res.status(200).json({ turnosPasados, turnosFuturos });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener el historial de turnos' });
+  }
+};
+
+export const cancelarTurno = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const turno = await Turno.findByPk(id);
+    if (!turno || turno.estado !== 'reservado') {
+      return res.status(404).json({ mensaje: "Turno no reservado o no encontrado" });
+    }
+
+    turno.estado = 'disponible';
+    turno.nombre_manual = null;
+    turno.email_manual = null;
+    turno.telefono = null;
+    turno.cliente_id = null;
+    await turno.save();
+
+    res.status(200).json({ mensaje: "Turno cancelado y disponible nuevamente", turno });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

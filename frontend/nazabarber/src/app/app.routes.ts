@@ -4,7 +4,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminTurnosComponent } from './pages/admin/admin-turnos/admin-turnos.component';
 import { AdminHistorialComponent } from './pages/admin/admin-historial/admin-historial.component';
+import { UsuarioDashboardComponent } from './pages/usuario/usuario-dashboard/usuario-dashboard.component';
 import { AdminGuard } from './guards/admin.guard';
+import { UsuarioGuard } from './guards/usuario.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,5 +21,6 @@ export const routes: Routes = [
       { path: 'historial', component: AdminHistorialComponent }
     ]
   },
+  { path: 'usuario', component: UsuarioDashboardComponent, canActivate: [UsuarioGuard] },
   { path: '**', redirectTo: '' }
 ];

@@ -1,1 +1,9 @@
-<p>admin-dashboard works!</p>
+<div class="admin-dashboard">
+  <h2>Panel del Administrador</h2>
+
+  <div class="acciones">
+    <button (click)="generarTurnos()">🗓 Generar Turnos Automáticos</button>
+    <button routerLink="/admin/turnos">📋 Gestionar Turnos</button>
+    <button routerLink="/admin/historial">📖 Ver Historial</button>
+  </div>
+</div>

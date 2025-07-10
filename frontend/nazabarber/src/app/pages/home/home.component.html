@@ -1,10 +1,10 @@
+<app-navbar></app-navbar>
+
 <div class="container py-4">
-  <!-- HERO CON IMAGEN Y TODO EL CONTENIDO -->
   <section class="hero-section">
     <img src="assets/naza.jpg" alt="NazaBarber" class="hero-img" />
 
     <div class="overlay-content">
-      <!-- PRESENTACIÓN -->
       <div class="presentation-card">
         <h1 class="titulo">NazaBarber</h1>
         <p class="subtitulo">
@@ -12,37 +12,26 @@
         </p>
 
         <div class="redes-sociales">
-          <a
-            href="https://www.instagram.com/naza.wicky/"
-            target="_blank"
-            class="social-icon instagram"
-          >
+          <a href="https://www.instagram.com/naza.wicky/" target="_blank" class="social-icon instagram">
             <i class="fab fa-instagram"></i>
           </a>
-          <a
-            href="https://wa.me/3447562289"
-            target="_blank"
-            class="social-icon whatsapp"
-          >
+          <a href="https://wa.me/3447562289" target="_blank" class="social-icon whatsapp">
             <i class="fab fa-whatsapp"></i>
           </a>
         </div>
       </div>
 
-      <!-- CARRUSEL DE CORTES -->
       <div class="carousel-horizontal mt-4">
         <div class="carousel-item-horizontal" *ngFor="let corte of cortes">
           <img [src]="corte.img" class="img-corte" alt="Corte de pelo" />
         </div>
       </div>
 
-      <!-- TURNOS -->
       <app-turno-lista
-        [diasOrdenados]="diasOrdenados"
-        [turnosPorDia]="turnosPorDia"
+        [turnos]="turnos"
+        [claseEstilo]="'modo-oscuro'"
         (reservar)="solicitarTurno($event)"
-      >
-      </app-turno-lista>
+      ></app-turno-lista>
     </div>
   </section>
 </div>

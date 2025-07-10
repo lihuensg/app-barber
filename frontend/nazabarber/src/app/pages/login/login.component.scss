@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #111111, #222222);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 6rem auto;
+  padding: 2.5rem;
+  background: rgba(0, 0, 0, 0.6); // Fondo más oscuro para mejor contraste
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  color: #fff;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+
+      &::placeholder {
+        color: #ccc;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 6px #fff;
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 0.6rem;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+
+  .alert {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #ffcccc;
+    margin-top: 1rem;
+  }
+
+  .crear-cuenta {
+    margin-top: 2rem;
+    text-align: center;
+
+    p {
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .btn {
+      width: auto;
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 0.4rem 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: #fff;
+        color: #000;
+      }
+    }
+  }
+}

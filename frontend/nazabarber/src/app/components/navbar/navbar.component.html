@@ -1,1 +1,22 @@
-<p>navbar works!</p>
+<!-- Navbar corregido con [routerLink] -->
+<nav class="navbar">
+  <div class="logo" (click)="irAInicio()">NazaBarber</div>
+
+  <ul class="nav-links">
+    <li *ngIf="!estaLogueado">
+      <a (click)="irALogin()">Iniciar sesión</a>
+    </li>
+
+    <li *ngIf="esAdmin">
+      <a [routerLink]="['/admin/dashboard']">Panel Admin</a>
+    </li>
+
+    <li *ngIf="estaLogueado && !esAdmin">
+      <a [routerLink]="['/usuario']">Mis Turnos</a>
+    </li>
+
+    <li *ngIf="estaLogueado">
+      <a (click)="logout()">Cerrar sesión</a>
+    </li>
+  </ul>
+</nav>

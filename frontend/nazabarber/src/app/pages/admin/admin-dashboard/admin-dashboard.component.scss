@@ -1,0 +1,49 @@
+.admin-dashboard {
+  max-width: 700px;
+  margin: 6rem auto 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: #1b1616;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px #000;
+  }
+
+  .acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    button {
+      padding: 0.9rem 1.4rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: #eba1a1;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background-color: #f8c4c4;
+      }
+    }
+
+    @media (min-width: 600px) {
+      flex-direction: row;
+      justify-content: center;
+
+      button {
+        min-width: 180px;
+      }
+    }
+  }
+}
