@@ -12,9 +12,8 @@ import { parseISO, getDay } from 'date-fns';
 export class TurnoListaComponent implements OnChanges {
   @Input() turnos: any[] = [];
   @Input() claseEstilo: string = 'modo-oscuro';
-  @Output() reservar = new EventEmitter<any>();
-    // Controlar si muestra botones editar y eliminar (solo para admin)
   @Input() editable: boolean = false;
+  @Output() reservar = new EventEmitter<any>();
   @Output() editar = new EventEmitter<any>();
   @Output() eliminar = new EventEmitter<any>();
 
@@ -30,37 +29,55 @@ export class TurnoListaComponent implements OnChanges {
   }
 
   organizarTurnosDesdeHoy() {
-    this.turnosPorDia = {};
-    this.diasOrdenados = [];
+  this.turnosPorDia = {};
+  this.diasOrdenados = [];
 
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
+  const ahora = new Date();
+  ahora.setSeconds(0, 0); // Para comparar horas sin milisegundos
 
-    const turnosFiltrados = this.turnos.filter(turno => {
-      const fecha = parseISO(turno.fecha);
-      return fecha >= hoy && getDay(fecha) !== 0; // excluir domingos
-    });
+  const turnosFiltrados = this.turnos.filter(turno => {
+    const fecha = parseISO(turno.fecha);
 
-    for (let turno of turnosFiltrados) {
-      const fechaStr = turno.fecha;
-      const fecha = parseISO(fechaStr);
+    // Excluir domingos
+    if (getDay(fecha) === 0) return false;
 
-      if (!this.turnosPorDia[fechaStr]) {
-        const [anio, mes, dia] = fechaStr.split('-');
-        const fechaFormateada = `${dia}/${mes}/${anio}`;
+    // Si es hoy, filtrar por hora
+    if (
+      fecha.getFullYear() === ahora.getFullYear() &&
+      fecha.getMonth() === ahora.getMonth() &&
+      fecha.getDate() === ahora.getDate()
+    ) {
+      const [h, m] = turno.hora.split(':').map(Number);
+      const horaTurno = new Date();
+      horaTurno.setHours(h, m, 0, 0);
 
-        this.turnosPorDia[fechaStr] = [];
-        this.diasOrdenados.push({
-          nombre: this.diasSemana[getDay(fecha)],
-          fecha: fechaStr,
-          fechaFormateada,
-          expandido: false
-        });
-      }
-
-      this.turnosPorDia[fechaStr].push(turno);
+      return horaTurno >= ahora;
     }
 
-    this.diasOrdenados.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    // Si es en el futuro, mostrarlo
+    return fecha > ahora;
+  });
+
+  for (let turno of turnosFiltrados) {
+    const fechaStr = turno.fecha;
+    const fecha = parseISO(fechaStr);
+
+    if (!this.turnosPorDia[fechaStr]) {
+      const [anio, mes, dia] = fechaStr.split('-');
+      const fechaFormateada = `${dia}/${mes}/${anio}`;
+
+      this.turnosPorDia[fechaStr] = [];
+      this.diasOrdenados.push({
+        nombre: this.diasSemana[getDay(fecha)],
+        fecha: fechaStr,
+        fechaFormateada,
+        expandido: false
+      });
+    }
+
+    this.turnosPorDia[fechaStr].push(turno);
   }
+
+  this.diasOrdenados.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+  } 
 }
