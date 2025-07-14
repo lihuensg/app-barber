@@ -225,3 +225,16 @@ export const cancelarTurno = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const cancelarTurnoCliente = async (req, res) => {
+  const { id } = req.params;
+  const turno = await Turno.findByPk(id);
+  if (!turno || turno.cliente_id !== req.usuario.id)
+    return res.status(403).json({ msg: 'No autorizado' });
+
+  turno.estado = 'disponible';
+  turno.cliente_id = null;
+  turno.nombre_manual = turno.email_manual = turno.telefono = null;
+  await turno.save();
+  res.json({ msg: 'Turno cancelado' });
+};

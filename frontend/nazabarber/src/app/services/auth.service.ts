@@ -40,4 +40,8 @@ constructor(private http: HttpClient, private router: Router) {}
   estaLogueado() {
     return !!this.getToken();
   }
+
+  registrar(data: any){
+    return this.http.post(`${this.baseUrl}/registrar`, data);
+  }
 }

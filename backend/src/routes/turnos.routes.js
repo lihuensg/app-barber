@@ -6,7 +6,8 @@ import {  reservarTurnoAnonimo,
           actualizarTurno,
           eliminarTurno,
           obtenerHistorialDeTurnos,
-          cancelarTurno
+          cancelarTurno,
+          cancelarTurnoCliente
         } from '../controllers/turno.controller.js';
 import { check } from 'express-validator';
 import { validarCampos } from '../middlewares/validarCampos.js';
@@ -79,5 +80,7 @@ router.get(
 );
 
 router.put('/cancelar/:id', [validarToken, esAdmin], cancelarTurno);
+router.put('/cancelarCliente/:id', [validarToken], cancelarTurnoCliente);
+
 
 export default router;
