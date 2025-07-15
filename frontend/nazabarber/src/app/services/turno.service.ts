@@ -21,6 +21,10 @@ export class TurnoService {
     return this.http.post(`${this.API}/anonimo`, data);
   }
 
+  reservarTurnoCliente(data: any) {
+    return this.http.post(`${this.API}/cliente`, data, { headers: this.headers() });
+  }
+
   crearTurno(data: any) {
     return this.http.post(`${this.API}/crear`, data, { headers: this.headers() });
   }

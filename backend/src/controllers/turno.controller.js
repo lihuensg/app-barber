@@ -1,4 +1,5 @@
 import { Turno } from "../models/turnos.js";
+import { Usuario } from "../models/usuarios.js";
 import { enviarEmailConfirmacion } from "../utils/email.js";
 import { generarTurnosDeLaSemana } from "../utils/generarTurnos.js";
 import { Op } from "sequelize";
@@ -40,6 +41,41 @@ export const reservarTurnoAnonimo = async (req, res) => {
     await enviarEmailConfirmacion(email, fecha, hora);
 
     res.status(201).json({ mensaje: "Turno reservado con éxito", turno });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const reservarTurnoCliente = async (req, res) => {
+  const { fecha, hora } = req.body;
+  const clienteId = req.user.id;
+
+
+  try {
+    const turno = await Turno.findOne({
+      where: { fecha, hora, estado: 'disponible' },
+    });
+
+    if (!turno) {
+      return res.status(404).json({ mensaje: 'Turno no disponible' });
+    }
+
+    const cliente = await Usuario.findByPk(clienteId, {
+      attributes: ['nombre', 'email', 'telefono']
+    });
+
+    // Asignar el turno al usuario logueado
+    turno.estado = 'reservado';
+    turno.cliente_id = clienteId;
+
+    // Limpiar campos manuales por si fueron usados antes
+    turno.nombre_manual = cliente.nombre;
+    turno.email_manual = cliente.email;
+    turno.telefono = cliente.telefono;
+
+    await turno.save();
+
+    res.status(201).json({ mensaje: 'Turno reservado con éxito', turno });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

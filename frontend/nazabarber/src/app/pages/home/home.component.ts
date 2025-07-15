@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TurnoService } from '../../services/turno.service';
 import { TurnoListaComponent } from '../../components/turno/turno-lista/turno-lista.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -24,9 +25,16 @@ export class HomeComponent implements OnInit {
     { img: 'assets/corte6.jpg' }
   ];
 
-  constructor(private turnoService: TurnoService) {}
+  constructor(
+    private turnoService: TurnoService,
+    private auth: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.cargarTurnos();
+  }
+
+  cargarTurnos() {
     this.turnoService.obtenerTurnosDisponibles().subscribe({
       next: (res) => {
         this.turnos = res;
@@ -36,37 +44,49 @@ export class HomeComponent implements OnInit {
   }
 
   solicitarTurno(turno: any) {
-    const nombre = prompt('Tu nombre:');
-    const email = prompt('Tu email:');
-    const telefono = prompt('Tu teléfono:');
+    if (this.auth.estaLogueado() && !this.auth.esAdmin()) {
+      // Usuario logueado pero cliente → usar el endpoint con cliente_id
+      const datos = { fecha: turno.fecha, hora: turno.hora };
 
-    if (!nombre || !email || !telefono) {
-      alert('Todos los campos son obligatorios.');
-      return;
-    }
+      this.turnoService.reservarTurnoCliente(datos).subscribe({
+        next: () => {
+          alert('Turno reservado con éxito como usuario registrado');
+          this.cargarTurnos();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Error al reservar turno como cliente');
+        }
+      });
+    } else {
+      // Usuario no logueado o admin → pedir datos manualmente
+      const nombre = prompt('Tu nombre:');
+      const email = prompt('Tu email:');
+      const telefono = prompt('Tu teléfono:');
 
-    const datos = {
-      fecha: turno.fecha,
-      hora: turno.hora,
-      nombre,
-      email,
-      telefono
-    };
-
-    this.turnoService.reservarTurnoAnonimo(datos).subscribe({
-      next: () => {
-        alert('Turno reservado con éxito');
-        this.turnoService.obtenerTurnosDisponibles().subscribe({
-          next: (res) => {
-            this.turnos = res;
-          },
-          error: (err) => console.error('Error al recargar turnos', err)
-        });
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Error al reservar turno');
+      if (!nombre || !email || !telefono) {
+        alert('Todos los campos son obligatorios.');
+        return;
       }
-    });
+
+      const datos = {
+        fecha: turno.fecha,
+        hora: turno.hora,
+        nombre,
+        email,
+        telefono
+      };
+
+      this.turnoService.reservarTurnoAnonimo(datos).subscribe({
+        next: () => {
+          alert('Turno reservado con éxito');
+          this.cargarTurnos();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Error al reservar turno');
+        }
+      });
+    }
   }
 }

@@ -7,7 +7,8 @@ import {  reservarTurnoAnonimo,
           eliminarTurno,
           obtenerHistorialDeTurnos,
           cancelarTurno,
-          cancelarTurnoCliente
+          cancelarTurnoCliente,
+          reservarTurnoCliente
         } from '../controllers/turno.controller.js';
 import { check } from 'express-validator';
 import { validarCampos } from '../middlewares/validarCampos.js';
@@ -32,8 +33,16 @@ router.post(
   reservarTurnoAnonimo
 );
 
+
 // Obtener todos los turnos disponibles
 router.get('/disponibles', obtenerTurnosDisponibles);
+
+// Usuario registrado reserva turno
+router.post(
+  '/cliente',
+  [validarToken],
+  reservarTurnoCliente
+);
 
 // Admin crea un nuevo turno disponible
 router.post(

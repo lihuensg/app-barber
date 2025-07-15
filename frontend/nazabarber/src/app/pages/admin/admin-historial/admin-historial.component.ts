@@ -66,7 +66,7 @@ export class AdminHistorialComponent implements OnInit {
 
   cancelarTurno(turno: any) {
     if (confirm(`¿Estás seguro que querés cancelar el turno de ${turno.hora} del ${turno.fecha}?`)) {
-      this.turnoService.eliminarTurno(turno.id).subscribe({
+      this.turnoService.cancelarTurno(turno.id).subscribe({
         next: () => {
           // Refrescar los datos después de cancelar
           this.ngOnInit();
