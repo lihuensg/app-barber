@@ -1,1 +1,55 @@
-<p>perfil works!</p>
+<div class="perfil-card" *ngIf="perfil">
+  <h2>Mi perfil</h2>
+
+  <!-- NOMBRE -->
+  <div class="perfil-item">
+    <strong>Nombre</strong>
+
+    <span *ngIf="!editando['nombre']">{{ perfil.nombre }}</span>
+
+    <input *ngIf="editando['nombre']"
+           [(ngModel)]="perfil.nombre"
+           type="text" />
+
+    <button (click)="toggleEdit('nombre')">
+      {{ editando['nombre'] ? 'Guardar' : '✏️' }}
+    </button>
+
+    <!-- error -->
+    <div class="error" *ngIf="errores['nombre']">{{ errores['nombre'] }}</div>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="perfil-item">
+    <strong>Email</strong>
+
+    <span *ngIf="!editando['email']">{{ perfil.email }}</span>
+
+    <input *ngIf="editando['email']"
+           [(ngModel)]="perfil.email"
+           type="email" />
+
+    <button (click)="toggleEdit('email')">
+      {{ editando['email'] ? 'Guardar' : '✏️' }}
+    </button>
+
+    <div class="error" *ngIf="errores['email']">{{ errores['email'] }}</div>
+  </div>
+
+  <!-- TELÉFONO -->
+  <div class="perfil-item">
+    <strong>Teléfono</strong>
+
+    <span *ngIf="!editando['telefono']">{{ perfil.telefono }}</span>
+
+    <input *ngIf="editando['telefono']"
+           [(ngModel)]="perfil.telefono"
+           type="text" />
+
+    <button (click)="toggleEdit('telefono')">
+      {{ editando['telefono'] ? 'Guardar' : '✏️' }}
+    </button>
+
+    <div class="error" *ngIf="errores['telefono']">{{ errores['telefono'] }}</div>
+  </div>
+</div>

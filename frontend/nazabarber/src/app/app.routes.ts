@@ -27,7 +27,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'mis-turnos', pathMatch: 'full' },
       { path: 'mis-turnos', component: MisTurnosComponent },
-      { path: 'perfil',     component: PerfilComponent }
+      { path: 'perfil', component: PerfilComponent }
     ]
   },
 
