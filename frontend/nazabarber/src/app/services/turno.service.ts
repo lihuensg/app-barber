@@ -56,4 +56,7 @@ export class TurnoService {
   return this.http.put(`${this.API}/cancelar/${id}`, {}, { headers: this.headers() });
   }
 
+  cancelarTurnoCliente(id: string) {
+    return this.http.put(`${this.API}/cancelarCliente/${id}`, {}, { headers: this.headers() });
+  }
 }

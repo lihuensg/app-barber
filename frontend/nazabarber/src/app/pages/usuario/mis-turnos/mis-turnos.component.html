@@ -1,1 +1,55 @@
-<p>mis-turnos works!</p>
+<div class="turnos-overlay modo-claro">
+  <h2>Mis Turnos</h2>
+
+  <!-- FUTUROS -->
+  <div class="seccion-historial">
+    <h3>🕓 Turnos Futuros</h3>
+    <ng-container *ngIf="diasFuturos.length; else sinFuturos">
+      <div *ngFor="let dia of diasFuturos" class="dia-turno">
+        <div class="dia-header" (click)="dia.expandido = !dia.expandido">
+          <h4>{{ dia.nombre }} ({{ dia.fechaFormateada }})</h4>
+          <span class="flecha" [class.abierto]="dia.expandido">▼</span>
+        </div>
+        <div class="turnos-lista" [class.expandido]="dia.expandido">
+          <div class="row">
+            <div class="col-turno" *ngFor="let turno of turnosPorDiaFuturos[dia.fecha]">
+              <div class="turno-card">
+                <p><strong>{{ turno.hora }}</strong></p>
+                <button class="cancelar-btn" (click)="cancelarTurno(turno)">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #sinFuturos>
+      <p>No tenés turnos futuros.</p>
+    </ng-template>
+  </div>
+
+  <!-- PASADOS -->
+  <div class="seccion-historial">
+    <h3>📜 Turnos Pasados</h3>
+    <ng-container *ngIf="diasPasados.length; else sinPasados">
+      <div *ngFor="let dia of diasPasados" class="dia-turno">
+        <div class="dia-header" (click)="dia.expandido = !dia.expandido">
+          <h4>{{ dia.nombre }} ({{ dia.fechaFormateada }})</h4>
+          <span class="flecha" [class.abierto]="dia.expandido">▼</span>
+        </div>
+        <div class="turnos-lista" [class.expandido]="dia.expandido">
+          <div class="row">
+            <div class="col-turno" *ngFor="let turno of turnosPorDiaPasados[dia.fecha]">
+              <div class="turno-card">
+                <p><strong>{{ turno.hora }}</strong></p>
+                <p class="estado-pasado">Realizado</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #sinPasados>
+      <p>No tenés turnos pasados.</p>
+    </ng-template>
+  </div>
+</div>

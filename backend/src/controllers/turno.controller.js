@@ -265,7 +265,7 @@ export const cancelarTurno = async (req, res) => {
 export const cancelarTurnoCliente = async (req, res) => {
   const { id } = req.params;
   const turno = await Turno.findByPk(id);
-  if (!turno || turno.cliente_id !== req.usuario.id)
+  if (!turno || turno.cliente_id !== req.user.id)
     return res.status(403).json({ msg: 'No autorizado' });
 
   turno.estado = 'disponible';
