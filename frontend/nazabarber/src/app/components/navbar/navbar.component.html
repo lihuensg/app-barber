@@ -6,6 +6,10 @@
       <a (click)="irALogin()">Iniciar sesión</a>
     </li>
 
+    <li *ngIf="estaLogueado">
+      <a [routerLink]="['/red-social']">Red Social</a>
+    </li>
+
     <li *ngIf="estaLogueado && esAdmin">
       <a [routerLink]="['/admin']">Panel Admin</a>
     </li>

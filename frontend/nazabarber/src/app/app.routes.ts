@@ -8,10 +8,15 @@ import { PerfilComponent }    from './pages/usuario/perfil/perfil.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminTurnosComponent }    from './pages/admin/admin-turnos/admin-turnos.component';
 import { AdminHistorialComponent } from './pages/admin/admin-historial/admin-historial.component';
+import { RegistroComponent } from './pages/registro/registro/registro.component';
+import { RedSocialComponent } from './pages/red-social/red-social.component';
+import { PostFeedComponent } from './pages/red-social/post-feed/post-feed.component';
+import { CrearPostComponent } from './pages/red-social/crear-post/crear-post.component';
+import { PostItemComponent } from './pages/red-social/post-item/post-item.component';
 
 import { AdminGuard }   from './guards/admin.guard';
 import { UsuarioGuard } from './guards/usuario.guard';
-import { RegistroComponent } from './pages/registro/registro/registro.component';
+
 
 export const routes: Routes = [
   /* público */
@@ -40,6 +45,19 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'turnos',    component: AdminTurnosComponent },
       { path: 'historial', component: AdminHistorialComponent }
+    ]
+  },
+
+  /* red social */
+  {
+    path: 'red-social',
+    component: RedSocialComponent,
+    canActivate: [UsuarioGuard],
+    children: [
+      { path: '', redirectTo: 'post-feed', pathMatch: 'full' },
+      { path: 'post-feed', component: PostFeedComponent },
+      { path: 'crear-post', component: CrearPostComponent },
+      { path: 'post/:id', component: PostItemComponent }
     ]
   },
 

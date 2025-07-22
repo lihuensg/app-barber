@@ -1,0 +1,22 @@
+<div class="crear-post-card">
+  <h3>Crear nuevo post</h3>
+
+  <textarea
+    [(ngModel)]="contenido"
+    placeholder="Escribe algo..."
+    rows="4"
+    class="input-textarea"
+  ></textarea>
+
+  <input
+    type="file"
+    id="imagen"
+    (change)="onFileChange($event)"
+    accept="image/*"
+    class="input-file"
+  />
+
+  <button (click)="publicarPost()" class="btn-publicar">Publicar</button>
+
+  <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
+</div>
