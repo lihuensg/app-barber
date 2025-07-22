@@ -14,6 +14,13 @@ app.use(cors({
 
 app.use(express.json());
 
+
+// Para leer datos de formularios (como multipart/form-data)
+app.use(express.urlencoded({ extended: true }));
+
+// Para servir archivos estáticos (como imágenes subidas)
+app.use('/uploads', express.static('uploads'));
+
 // Rutas
 app.use("/api/turnos", turnosRoutes);
 app.use("/api/auth", authRoutes);

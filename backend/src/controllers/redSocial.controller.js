@@ -2,11 +2,11 @@ import { Post } from "../models/posts.js";
 import { Like } from "../models/likes.js";
 import { Comentario } from "../models/comentarios.js";
 
-// 📸 Crear post
 export const crearPost = async (req, res) => {
   try {
-    const { imagen_url, descripcion } = req.body;
+    const { descripcion } = req.body;
     const usuario_id = req.user.id;
+    const imagen_url = req.file ? req.file.path : null;
 
     const nuevoPost = await Post.create({
       imagen_url,
@@ -20,7 +20,7 @@ export const crearPost = async (req, res) => {
   }
 };
 
-// 🧾 Obtener todos los posts (con comentarios y likes)
+//Obtener todos los posts (con comentarios y likes)
 export const obtenerPosts = async (req, res) => {
   try {
     const posts = await Post.findAll({
@@ -33,7 +33,6 @@ export const obtenerPosts = async (req, res) => {
   }
 };
 
-// 👍 Dar like
 export const darLike = async (req, res) => {
   try {
     const usuario_id = req.user.id;
@@ -53,7 +52,6 @@ export const darLike = async (req, res) => {
   }
 };
 
-// 💬 Comentar post
 export const comentarPost = async (req, res) => {
   try {
     const usuario_id = req.user.id;

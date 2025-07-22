@@ -6,11 +6,12 @@ import {
   comentarPost
 } from '../controllers/redSocial.controller.js';
 import { validarToken } from '../middlewares/validarToken.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
 // Crear post
-router.post('/post', validarToken, crearPost);
+router.post('/post', validarToken, upload.single('imagen'), crearPost);
 
 // Obtener todos los posts con comentarios y likes
 router.get('/posts', obtenerPosts);
