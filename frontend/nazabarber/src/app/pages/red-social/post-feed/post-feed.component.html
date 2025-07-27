@@ -1,1 +1,15 @@
-<p>post-feed works!</p>
+<div *ngIf="cargando">Cargando posts...</div>
+
+<ng-container *ngIf="!cargando">
+  <app-post-item
+    *ngFor="let post of posts | slice:0:cantidadMostrada"
+    [post]="post">
+  </app-post-item>
+
+  <button
+    *ngIf="cantidadMostrada < posts.length"
+    (click)="mostrarMas()"
+    class="btn btn-primary mt-3">
+    Mostrar más
+  </button>
+</ng-container>

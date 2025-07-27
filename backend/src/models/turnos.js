@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
-import { Usuario } from './usuarios.js';
 
 export const Turno = sequelize.define('Turno', {
   id: {
@@ -33,5 +32,3 @@ export const Turno = sequelize.define('Turno', {
     allowNull: true
   }
 });
-
-Turno.belongsTo(Usuario, { foreignKey: 'cliente_id', as: 'cliente' });

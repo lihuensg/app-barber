@@ -2,6 +2,16 @@ import app from './app.js';
 import { sequelize } from './database/database.js';
 import dotenv from 'dotenv';
 
+// Importar los modelos para que se carguen
+import './models/usuarios.js';
+import './models/posts.js';
+import './models/comentarios.js';
+import './models/likes.js';
+import './models/turnos.js';
+
+// Importar las asociaciones para que se definan
+import './models/associations.js';
+
 dotenv.config();
 
 async function main() {

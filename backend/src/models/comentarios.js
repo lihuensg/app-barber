@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
-import { Usuario } from "./usuarios.js";
-import { Post } from "./posts.js";
 
 export const Comentario = sequelize.define("Comentario", {
   id: {
@@ -19,5 +17,3 @@ export const Comentario = sequelize.define("Comentario", {
   },
 });
 
-Comentario.belongsTo(Usuario, { foreignKey: "usuario_id" });
-Comentario.belongsTo(Post, { foreignKey: "post_id" });

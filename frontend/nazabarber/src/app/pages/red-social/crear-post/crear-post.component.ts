@@ -11,7 +11,7 @@ import { RedSocialService } from '../../../services/red-social.service';
   styleUrl: './crear-post.component.scss'
 })
 export class CrearPostComponent {
-  contenido: string = '';
+  descripcion: string = '';
   imagen: File | null = null;
   mensaje: string = '';
 
@@ -25,19 +25,19 @@ export class CrearPostComponent {
   }
 
   publicarPost() {
-    if (!this.contenido || !this.imagen) {
+    if (!this.descripcion || !this.imagen) {
       this.mensaje = 'Completa todos los campos.';
       return;
     }
 
     const formData = new FormData();
-    formData.append('contenido', this.contenido);
+    formData.append('descripcion', this.descripcion);
     formData.append('imagen', this.imagen);
 
     this.redSocialService.crearPost(formData).subscribe({
       next: () => {
         this.mensaje = 'Post publicado con éxito.';
-        this.contenido = '';
+        this.descripcion = '';
         this.imagen = null;
         (document.getElementById('imagen') as HTMLInputElement).value = '';
       },
