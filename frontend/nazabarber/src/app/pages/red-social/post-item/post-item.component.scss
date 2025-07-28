@@ -1,0 +1,95 @@
+.post-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .user-name {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    margin: 0;
+  }
+}
+
+.post-image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  background: #eee;
+}
+
+/* NUEVO: Padding interno para los botones Like y Comentarios */
+.card-body.pt-2 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.d-flex.align-items-center.mb-2 > button:first-child {
+  margin-right: 0.3rem; /* o el espacio que quieras, ej 16px */
+}
+
+/* Separación entre los botones (like y comentarios) y el borde */
+.card-body.pt-2 > .d-flex.align-items-center.mb-2 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+/* Separar un poco el texto de descripción del margen */
+.card-text {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Separar comentarios del borde */
+.comentarios {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Color de like activo */
+.liked {
+  color: red;
+}
+
+button.btn {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .post-card {
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+
+  .post-image {
+    max-height: 300px;
+  }
+}

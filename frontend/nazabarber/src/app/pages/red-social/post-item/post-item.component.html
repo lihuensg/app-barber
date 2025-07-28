@@ -1,7 +1,77 @@
-<div class="card mb-3">
-  <img *ngIf="post.imagen_url" [src]="'http://localhost:4000/' + post.imagen_url" class="card-img-top" alt="Imagen del post">
-  <div class="card-body">
-    <p class="card-text">{{ post.descripcion }}</p>
-    <p class="text-muted small">Likes: {{ post.Likes?.length || 0 }} | Comentarios: {{ post.Comentarios?.length || 0 }}</p>
+<div class="post-card mb-4" *ngIf="!post.eliminado">
+  <!-- Header horizontal: foto, nombre y eliminar a la derecha -->
+  <div class="post-header">
+  <div class="user-info">
+    <div class="profile-pic"></div>
+    <span class="user-name">{{ post.Usuario?.nombre || 'Usuario' }}</span>
+  </div>
+
+  <button *ngIf="puedeEliminarPost()" (click)="confirmarEliminarPost()" class="btn btn-sm btn-outline-danger">
+    🗑
+  </button>
+</div>
+
+
+
+  <!-- Imagen del post -->
+  <img
+    *ngIf="post.imagen_url"
+    [src]="'http://localhost:4000/' + post.imagen_url"
+    class="post-image"
+    alt="Imagen del post"
+  />
+
+  <!-- Acciones -->
+  <div class="card-body pt-2">
+    <div class="d-flex align-items-center mb-2">
+      <button
+        class="btn btn-sm me-3"
+        (click)="toggleLike()"
+        [@likeAnim]="likeCount"
+      >
+        <span [class.liked]="yaLikeado">❤️</span> {{ likeCount }}
+      </button>
+      <button class="btn btn-sm" (click)="toggleComentarios()">
+        💬 {{ post.Comentarios?.length || 0 }}
+      </button>
+    </div>
+
+    <p class="card-text mb-2">{{ post.descripcion }}</p>
+
+    <!-- Comentarios -->
+    <div *ngIf="mostrarComentarios" class="comentarios border-top pt-2">
+      <div *ngIf="post.Comentarios?.length > 0; else sinComentarios">
+        <div
+          *ngFor="let comentario of post.Comentarios"
+          class="mb-1 d-flex justify-content-between"
+        >
+          <div>
+            <strong>{{ comentario.Usuario?.nombre || "Anon" }}</strong
+            >: {{ comentario.contenido }}
+          </div>
+          <button
+            *ngIf="puedeEliminarComentario(comentario)"
+            class="btn btn-sm btn-link text-danger p-0"
+            (click)="eliminarComentario(comentario.id)"
+          >
+            ❌
+          </button>
+        </div>
+      </div>
+      <ng-template #sinComentarios>
+        <p class="text-muted">No hay comentarios todavía.</p>
+      </ng-template>
+      <div class="d-flex mt-2">
+        <input
+          type="text"
+          class="form-control form-control-sm me-2"
+          [(ngModel)]="nuevoComentario"
+          placeholder="Escribí un comentario..."
+        />
+        <button class="btn btn-sm btn-primary" (click)="enviarComentario()">
+          Enviar
+        </button>
+      </div>
+    </div>
   </div>
 </div>

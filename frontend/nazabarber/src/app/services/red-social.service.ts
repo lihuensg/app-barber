@@ -22,10 +22,22 @@ export class RedSocialService {
   }
 
   darLike(postId: string) {
-    return this.http.post(`${this.apiUrl}/likes/${postId}`, {}, { headers: this.headers() });
+  return this.http.post(`${this.apiUrl}/like/${postId}`, {}, { headers: this.headers() });
+}
+
+  quitarLike(postId: string) {
+    return this.http.delete(`${this.apiUrl}/like/${postId}`, { headers: this.headers() });
   }
 
   comentar(postId: string, contenido: string) {
-    return this.http.post(`${this.apiUrl}/comentarios/${postId}`, { contenido }, { headers: this.headers() });
+    return this.http.post(`${this.apiUrl}/comentario/${postId}`, { contenido }, { headers: this.headers() });
+  }
+
+  eliminarPost(postId: string) {
+  return this.http.delete(`${this.apiUrl}/post/${postId}`, { headers: this.headers() });
+}
+
+  eliminarComentario(comentarioId: string) {
+    return this.http.delete(`${this.apiUrl}/comentario/${comentarioId}`, { headers: this.headers() });
   }
 }

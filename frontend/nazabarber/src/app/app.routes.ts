@@ -16,6 +16,7 @@ import { PostItemComponent } from './pages/red-social/post-item/post-item.compon
 
 import { AdminGuard }   from './guards/admin.guard';
 import { UsuarioGuard } from './guards/usuario.guard';
+import { RedSocialGuard } from './guards/red-social.guard';
 
 
 export const routes: Routes = [
@@ -52,7 +53,7 @@ export const routes: Routes = [
   {
     path: 'red-social',
     component: RedSocialComponent,
-    canActivate: [UsuarioGuard],
+    canActivate: [RedSocialGuard],
     children: [
       { path: '', redirectTo: 'post-feed', pathMatch: 'full' },
       { path: 'post-feed', component: PostFeedComponent },
