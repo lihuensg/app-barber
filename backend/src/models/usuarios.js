@@ -28,6 +28,10 @@ export const Usuario = sequelize.define('Usuario', {
     type: DataTypes.ENUM('cliente', 'admin'),
     defaultValue: 'cliente'
   },
+  foto_perfil: {
+    type: DataTypes.STRING,  
+    allowNull: true           
+  },
   creado_en: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

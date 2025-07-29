@@ -36,7 +36,7 @@ export const obtenerPosts = async (req, res) => {
     const posts = await Post.findAll({
       include: [
         { model: Usuario, 
-          attributes: ["id", "nombre", "email"] },
+          attributes: ["id", "nombre", "email", "foto_perfil"] },
         { model: Comentario,
           include : {
             model: Usuario,

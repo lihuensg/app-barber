@@ -9,14 +9,31 @@ export const miPerfil = async (req, res) => {
 };
 
 export const actualizarPerfil = async (req, res) => {
-  const { nombre, email, telefono } = req.body;
-  const user = await Usuario.findByPk(req.user.id);
-  user.nombre = nombre || user.nombre;
-  user.email = email || user.email;
-  user.telefono = telefono || user.telefono;
-  await user.save();
-  res.json({ msg: 'Perfil actualizado' });
+  try {
+    const { nombre, email, telefono } = req.body;
+    const user = await Usuario.findByPk(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    if (req.file) {
+      user.foto_perfil = req.file ? req.file.filename : user.foto_perfil;
+    }
+
+    user.nombre = nombre || user.nombre;
+    user.email = email || user.email;
+    user.telefono = telefono || user.telefono;
+
+    await user.save();
+
+    res.json({ msg: 'Perfil actualizado correctamente', usuario: user });
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar perfil', error });
+  }
 };
+
 
 export const misTurnos = async (req, res) => {
   const todos = await Turno.findAll({
