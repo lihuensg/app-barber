@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
+  menuAbierto = false;
+
   constructor(private authService: AuthService, private router: Router) {}
 
   get estaLogueado(): boolean {
@@ -24,6 +26,10 @@ export class NavbarComponent {
 
   get nombreUsuario(): string {
     return this.authService.getUsuario()?.nombre ?? '';
+  }
+
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
   }
 
   irAInicio() {
