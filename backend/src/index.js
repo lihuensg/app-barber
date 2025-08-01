@@ -16,7 +16,7 @@ dotenv.config();
 
 async function main() {
     try {
-        await sequelize.sync({ force: false }); // Cambiar a true para reiniciar la base de datos
+        await sequelize.sync({ force: false }); // Cambiar a alter: true para agregar cosas la base de datos sin borrarla
         app.listen(process.env.PORT || 4000);
         console.log('Server is running on port', process.env.PORT || 4000);   
     } catch (error) {

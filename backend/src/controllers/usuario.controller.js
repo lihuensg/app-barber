@@ -8,9 +8,27 @@ export const miPerfil = async (req, res) => {
   res.json(usuario);
 };
 
+export const obtenerDatosHome = async (req, res) => {
+  try {
+    const admin = await Usuario.findOne({
+      where: { rol: 'admin' },
+      attributes: ['instagram', 'telefono']
+    });
+
+    if (!admin) {
+      return res.status(404).json({ mensaje: 'Admin no encontrado' });
+    }
+
+    res.json(admin);
+  } catch (error) {
+    console.error('Error al obtener datos para home:', error);
+    res.status(500).json({ mensaje: 'Error interno', error });
+  }
+};
+
 export const actualizarPerfil = async (req, res) => {
   try {
-    const { nombre, email, telefono } = req.body;
+    const { nombre, email, telefono, instagram } = req.body;
     const user = await Usuario.findByPk(req.user.id);
 
     if (!user) {
@@ -24,6 +42,7 @@ export const actualizarPerfil = async (req, res) => {
     user.nombre = nombre || user.nombre;
     user.email = email || user.email;
     user.telefono = telefono || user.telefono;
+    user.instagram = instagram || user.instagram;
 
     await user.save();
 

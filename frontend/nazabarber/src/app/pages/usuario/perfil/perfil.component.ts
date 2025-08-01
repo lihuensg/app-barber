@@ -13,40 +13,50 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PerfilComponent implements OnInit {
   perfil: any = null;
+  esAdmin: boolean = false;
 
-  editando: Record<'nombre' | 'email' | 'telefono', boolean> = {
+  editando: Record<'nombre' | 'email' | 'telefono' | 'instagram', boolean> = {
     nombre: false,
     email: false,
-    telefono: false
+    telefono: false,
+    instagram: false,
   };
 
-  errores: Record<'nombre' | 'email' | 'telefono', string> = {
+  errores: Record<'nombre' | 'email' | 'telefono' | 'instagram', string> = {
     nombre: '',
     email: '',
-    telefono: ''
+    telefono: '',
+    instagram: '',
   };
 
   constructor(private usuarioService: UsuarioService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.usuarioService.obtenerPerfil().subscribe({
-      next: (res) => (this.perfil = res),
+      next: (res) => {
+        this.perfil = res;
+        this.esAdmin = this.perfil.rol === 'admin';
+      },
       error: (err) => console.error('Error al cargar perfil', err)
     });
   }
 
-  toggleEdit(campo: 'nombre' | 'email' | 'telefono'): void {
+  toggleEdit(campo: 'nombre' | 'email' | 'telefono' | 'instagram'): void {
     if (this.editando[campo]) {
-      const valor = this.perfil[campo]?.toString().trim();
-      if (!valor) {
+      const valor = this.perfil[campo]?.toString().trim() || '';
+
+      // Validación para campos obligatorios
+      if (campo === 'nombre' && !valor) {
         this.errores[campo] = 'Este campo no puede estar vacío';
         return;
       }
 
-      if (campo === 'email' && !this.validarEmail(valor)) {
+      if (campo === 'email' && valor && !this.validarEmail(valor)) {
         this.errores[campo] = 'El email no es válido';
         return;
       }
+
+      // Para telefono e instagram no es obligatorio
 
       this.errores[campo] = '';
 

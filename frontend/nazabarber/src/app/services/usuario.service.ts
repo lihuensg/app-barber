@@ -17,6 +17,10 @@ export class UsuarioService {
     return this.http.get(`${this.API}`, { headers: this.headers() });
   }
 
+  obtenerDatosAdminPublicos() {
+    return this.http.get(`${this.API}/publico/datos-home`);
+  }
+
   actualizarPerfil(datos: any): Observable<any> {
     return this.http.put(`${this.API}`, datos, { headers: this.headers() });
   }

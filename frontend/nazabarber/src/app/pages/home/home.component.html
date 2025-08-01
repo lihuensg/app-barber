@@ -11,11 +11,21 @@
           Estilo, precisión y actitud. Cada corte cuenta tu historia.
         </p>
 
-        <div class="redes-sociales">
-          <a href="https://www.instagram.com/naza.wicky/" target="_blank" class="social-icon instagram">
+        <div class="redes-sociales" *ngIf="adminPerfil">
+          <a
+            *ngIf="adminPerfil.instagram"
+            [href]="'https://www.instagram.com/' + adminPerfil.instagram"
+            target="_blank"
+            class="social-icon instagram"
+          >
             <i class="fab fa-instagram"></i>
           </a>
-          <a href="https://wa.me/3447562289" target="_blank" class="social-icon whatsapp">
+          <a
+            *ngIf="adminPerfil.telefono"
+            [href]="'https://wa.me/' + adminPerfil.telefono"
+            target="_blank"
+            class="social-icon whatsapp"
+          >
             <i class="fab fa-whatsapp"></i>
           </a>
         </div>

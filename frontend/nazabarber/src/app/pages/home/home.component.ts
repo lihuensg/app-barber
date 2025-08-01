@@ -4,6 +4,7 @@ import { TurnoService } from '../../services/turno.service';
 import { TurnoListaComponent } from '../../components/turno/turno-lista/turno-lista.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { AuthService } from '../../services/auth.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class HomeComponent implements OnInit {
   turnos: any[] = [];
-
+  adminPerfil: any = null;
+  
   cortes = [
     { img: 'assets/corte1.jpg' },
     { img: 'assets/corte2.jpg' },
@@ -27,11 +29,13 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private turnoService: TurnoService,
-    private auth: AuthService
+    private auth: AuthService,
+    private usuarioService: UsuarioService
   ) {}
 
   ngOnInit(): void {
     this.cargarTurnos();
+    this.cargarAdminPerfil();
   }
 
   cargarTurnos() {
@@ -41,6 +45,15 @@ export class HomeComponent implements OnInit {
       },
       error: (err) => console.error('Error al cargar turnos', err)
     });
+  }
+
+  cargarAdminPerfil() {
+  this.usuarioService.obtenerDatosAdminPublicos().subscribe({
+    next: (res) => {
+      this.adminPerfil = res;
+    },
+    error: (err) => console.error('Error al cargar perfil admin público', err)
+  });
   }
 
   solicitarTurno(turno: any) {

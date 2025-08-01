@@ -22,7 +22,11 @@ export const Usuario = sequelize.define('Usuario', {
   },
   telefono: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  instagram: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   rol: {
     type: DataTypes.ENUM('cliente', 'admin'),
