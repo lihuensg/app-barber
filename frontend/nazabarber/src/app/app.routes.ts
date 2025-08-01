@@ -45,7 +45,8 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'turnos',    component: AdminTurnosComponent },
-      { path: 'historial', component: AdminHistorialComponent }
+      { path: 'historial', component: AdminHistorialComponent },
+      { path: 'perfil', component: PerfilComponent }
     ]
   },
 

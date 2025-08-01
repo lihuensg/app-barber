@@ -2,30 +2,51 @@
   <div class="navbar-left">
     <div class="logo" (click)="irAInicio()">NazaBarber</div>
     <button class="menu-toggle" (click)="toggleMenu()">
-      &#9776;
+      <i class="fas fa-bars"></i>
     </button>
   </div>
 
   <ul class="nav-links" [class.open]="menuAbierto">
+    <!-- Login -->
     <li *ngIf="!estaLogueado">
-      <a (click)="irALogin()">Iniciar sesión</a>
+      <a (click)="irALogin()">
+        <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+      </a>
     </li>
 
+    <!-- Red Social -->
     <li *ngIf="estaLogueado">
-      <a [routerLink]="['/red-social']">Red Social</a>
+      <a [routerLink]="['/red-social']">
+        <i class="fas fa-users"></i> Red Social
+      </a>
     </li>
 
+    <!-- Panel Admin -->
     <li *ngIf="estaLogueado && esAdmin">
-      <a [routerLink]="['/admin']">Panel Admin</a>
+      <a [routerLink]="['/admin']">
+        <i class="fas fa-tools"></i> Panel Admin
+      </a>
     </li>
 
-    <ng-container *ngIf="estaLogueado && !esAdmin">
-      <li><a [routerLink]="['/usuario']">Mis turnos</a></li>
-      <li><a [routerLink]="['/usuario/perfil']">Mi perfil</a></li>
-    </ng-container>
+    <!-- Turnos usuario -->
+    <li *ngIf="estaLogueado && !esAdmin">
+      <a [routerLink]="['/usuario']">
+        <i class="fas fa-calendar-alt"></i> Mis turnos
+      </a>
+    </li>
 
+    <!-- Perfil común a ambos -->
     <li *ngIf="estaLogueado">
-      <a (click)="logout()">Cerrar sesión</a>
+      <a [routerLink]="[esAdmin ? '/admin/perfil' : '/usuario/perfil']">
+        <i class="fas fa-user-circle"></i> Perfil
+      </a>
+    </li>
+
+    <!-- Logout -->
+    <li *ngIf="estaLogueado">
+      <a (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </a>
     </li>
   </ul>
 </nav>
