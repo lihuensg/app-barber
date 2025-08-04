@@ -57,49 +57,54 @@ export class HomeComponent implements OnInit {
   }
 
   solicitarTurno(turno: any) {
-    if (this.auth.estaLogueado() && !this.auth.esAdmin()) {
-      // Usuario logueado pero cliente → usar el endpoint con cliente_id
-      const datos = { fecha: turno.fecha, hora: turno.hora };
+  const esLogueado = this.auth.estaLogueado();
+  const esAdmin = this.auth.esAdmin();
 
-      this.turnoService.reservarTurnoCliente(datos).subscribe({
-        next: () => {
-          alert('Turno reservado con éxito como usuario registrado');
-          this.cargarTurnos();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al reservar turno como cliente');
-        }
-      });
-    } else {
-      // Usuario no logueado o admin → pedir datos manualmente
-      const nombre = prompt('Tu nombre:');
-      const email = prompt('Tu email:');
-      const telefono = prompt('Tu teléfono:');
+  // Caso 1: Usuario cliente logueado
+  if (esLogueado && !esAdmin) {
+    const datos = { fecha: turno.fecha, hora: turno.hora };
 
-      if (!nombre || !email || !telefono) {
-        alert('Todos los campos son obligatorios.');
-        return;
+    this.turnoService.reservarTurnoCliente(datos).subscribe({
+      next: () => {
+        alert('Turno reservado con éxito como usuario registrado');
+        this.cargarTurnos();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al reservar turno como cliente');
       }
-
-      const datos = {
-        fecha: turno.fecha,
-        hora: turno.hora,
-        nombre,
-        email,
-        telefono
-      };
-
-      this.turnoService.reservarTurnoAnonimo(datos).subscribe({
-        next: () => {
-          alert('Turno reservado con éxito');
-          this.cargarTurnos();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al reservar turno');
-        }
-      });
-    }
+    });
+    return;
   }
+
+  // Caso 2 y 3: Usuario no logueado o admin logueado
+  const nombre = prompt('Tu nombre:');
+  if (!nombre) {
+    alert('El nombre es obligatorio.');
+    return;
+  }
+
+  const email = prompt('Tu email (opcional):');
+  const telefono = prompt('Tu teléfono (opcional):');
+
+  // 👉 Ya NO validamos email/telefono como obligatorios para no logueados ni admin
+  const datos = {
+    fecha: turno.fecha,
+    hora: turno.hora,
+    nombre,
+    email: email || '',
+    telefono: telefono || ''
+  };
+
+  this.turnoService.reservarTurnoAnonimo(datos).subscribe({
+    next: () => {
+      alert('Turno reservado con éxito');
+      this.cargarTurnos();
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Error al reservar turno');
+    }
+  });
+}
 }

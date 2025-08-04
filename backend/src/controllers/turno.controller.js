@@ -34,11 +34,14 @@ export const reservarTurnoAnonimo = async (req, res) => {
 
     turno.estado = "reservado";
     turno.nombre_manual = nombre;
-    turno.email_manual = email;
-    turno.telefono = telefono;
+    turno.email_manual = email || null;
+    turno.telefono = telefono || null;
     await turno.save();
 
-    await enviarEmailConfirmacion(email, fecha, hora);
+    // Solo enviar el mail si se proporcionó
+    if (email && email.trim() !== "") {
+      await enviarEmailConfirmacion(email, fecha, hora);
+    }
 
     res.status(201).json({ mensaje: "Turno reservado con éxito", turno });
   } catch (error) {

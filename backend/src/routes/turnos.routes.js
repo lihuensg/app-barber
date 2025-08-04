@@ -25,8 +25,6 @@ router.post(
     check('fecha', 'La fecha es obligatoria').notEmpty(),
     check('hora', 'La hora es obligatoria').notEmpty(),
     check('nombre', 'El nombre es obligatorio').notEmpty(),
-    check('email', 'El email es obligatorio').isEmail(),
-    check('telefono', 'El teléfono es obligatorio').notEmpty(),
     validarCampos,
     limiteTurnosAnonimos
   ],
