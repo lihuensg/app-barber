@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TurnoService } from '../../services/turno.service';
 import { TurnoListaComponent } from '../../components/turno/turno-lista/turno-lista.component';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -9,7 +10,7 @@ import { UsuarioService } from '../../services/usuario.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, TurnoListaComponent, NavbarComponent],
+  imports: [CommonModule, ReactiveFormsModule, TurnoListaComponent, NavbarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   providers: [TurnoService]
@@ -17,7 +18,12 @@ import { UsuarioService } from '../../services/usuario.service';
 export class HomeComponent implements OnInit {
   turnos: any[] = [];
   adminPerfil: any = null;
-  
+  formularioAnonimo!: FormGroup;
+  mostrarFormulario: boolean = false;
+  turnoSeleccionado: any = null;
+  mensajeError: string | null = null;
+  mensajeExito: string | null = null;
+
   cortes = [
     { img: 'assets/corte1.jpg' },
     { img: 'assets/corte2.jpg' },
@@ -30,12 +36,22 @@ export class HomeComponent implements OnInit {
   constructor(
     private turnoService: TurnoService,
     private auth: AuthService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.cargarTurnos();
     this.cargarAdminPerfil();
+    this.inicializarFormulario();
+  }
+
+  inicializarFormulario() {
+    this.formularioAnonimo = this.fb.group({
+      nombre: ['', Validators.required],
+      email: ['', [Validators.email]],
+      telefono: ['']
+    });
   }
 
   cargarTurnos() {
@@ -48,63 +64,84 @@ export class HomeComponent implements OnInit {
   }
 
   cargarAdminPerfil() {
-  this.usuarioService.obtenerDatosAdminPublicos().subscribe({
-    next: (res) => {
-      this.adminPerfil = res;
-    },
-    error: (err) => console.error('Error al cargar perfil admin público', err)
-  });
+    this.usuarioService.obtenerDatosAdminPublicos().subscribe({
+      next: (res) => {
+        this.adminPerfil = res;
+      },
+      error: (err) => console.error('Error al cargar perfil admin público', err)
+    });
   }
 
   solicitarTurno(turno: any) {
-  const esLogueado = this.auth.estaLogueado();
-  const esAdmin = this.auth.esAdmin();
+    const esLogueado = this.auth.estaLogueado();
+    const esAdmin = this.auth.esAdmin();
+    
+    if (esLogueado && !esAdmin) {
+      const datos = { fecha: turno.fecha, hora: turno.hora };
 
-  // Caso 1: Usuario cliente logueado
-  if (esLogueado && !esAdmin) {
-    const datos = { fecha: turno.fecha, hora: turno.hora };
+      this.turnoService.reservarTurnoCliente(datos).subscribe({
+        next: () => {
+          this.mensajeExito = 'Turno reservado con éxito.';
+          this.cargarTurnos();
+          setTimeout(() => this.mensajeExito = null, 3000);
+        },
+        error: (err) => {
+          this.mensajeError = 'Error al reservar turno como cliente.';
+          console.error(err);
+        setTimeout(() => this.mensajeError = null, 3000);
+        }
+      });
+      return;
+    }
 
-    this.turnoService.reservarTurnoCliente(datos).subscribe({
+    // Mostrar formulario para no logueados o admin logueado
+    this.turnoSeleccionado = turno;
+    this.mostrarFormulario = true;
+  }
+
+  confirmarTurnoAnonimo() {
+    if (!this.formularioAnonimo.valid) {
+      this.mensajeError = 'Por favor, completá los campos obligatorios correctamente.';
+      return;
+    }
+
+    const email = this.formularioAnonimo.get('email')?.value;
+    const telefono = this.formularioAnonimo.get('telefono')?.value;
+
+    const datos = {
+      fecha: this.turnoSeleccionado.fecha,
+      hora: this.turnoSeleccionado.hora,
+      nombre: this.formularioAnonimo.get('nombre')?.value,
+      email: email || '',
+      telefono: telefono || ''
+    };
+
+    this.turnoService.reservarTurnoAnonimo(datos).subscribe({
       next: () => {
-        alert('Turno reservado con éxito como usuario registrado');
+        this.mensajeExito = 'Turno reservado con éxito.';
+        this.mensajeError = null;
+        this.formularioAnonimo.reset();
         this.cargarTurnos();
+        // Ocultar mensaje después de 3s
+        setTimeout(() => {
+          this.mostrarFormulario = false;
+          this.mensajeExito = null;
+        }, 3000);
       },
       error: (err) => {
         console.error(err);
-        alert('Error al reservar turno como cliente');
+        this.mensajeError = err.status === 429
+        ? (err.error?.mensaje)
+        :'Error al reservar turno, intenta nuevamente';
+        this.mensajeExito = null;
+        // Ocultar mensaje de error después de 3s
+        setTimeout(() => this.mensajeError = null, 3000);
       }
     });
-    return;
   }
 
-  // Caso 2 y 3: Usuario no logueado o admin logueado
-  const nombre = prompt('Tu nombre:');
-  if (!nombre) {
-    alert('El nombre es obligatorio.');
-    return;
+  cancelarFormulario() {
+    this.mostrarFormulario = false;
+    this.formularioAnonimo.reset();
   }
-
-  const email = prompt('Tu email (opcional):');
-  const telefono = prompt('Tu teléfono (opcional):');
-
-  // 👉 Ya NO validamos email/telefono como obligatorios para no logueados ni admin
-  const datos = {
-    fecha: turno.fecha,
-    hora: turno.hora,
-    nombre,
-    email: email || '',
-    telefono: telefono || ''
-  };
-
-  this.turnoService.reservarTurnoAnonimo(datos).subscribe({
-    next: () => {
-      alert('Turno reservado con éxito');
-      this.cargarTurnos();
-    },
-    error: (err) => {
-      console.error(err);
-      alert('Error al reservar turno');
-    }
-  });
-}
 }

@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #111111, #222222);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+}
+
+.register-container {
+  max-width: 400px;
+  margin: 6rem auto;
+  padding: 2.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #fff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input {
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #1c1c1c;
+  color: #fff;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  box-shadow: 0 0 5px #00bcd4;
+  border: 1px solid #00bcd4;
+}
+
+button {
+  padding: 0.9rem;
+  background: #00bcd4;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  color: #000;
+}
+
+button:hover {
+  background: #019db3;
+}
+
+a {
+  text-align: center;
+  display: block;
+  margin-top: 1rem;
+  color: #00bcd4;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #ff5252;
+  font-size: 0.85rem;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ✅ Responsive para celular */
+@media (max-width: 480px) {
+  .login-container,
+  .register-container {
+    margin: 3rem 1rem;
+    padding: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  input,
+  button {
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+}

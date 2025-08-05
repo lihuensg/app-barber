@@ -1,4 +1,13 @@
 <app-navbar></app-navbar>
+<!-- Mensaje de éxito -->
+<div class="alert-toast success" *ngIf="mensajeExito">
+  {{ mensajeExito }}
+</div>
+
+<!-- Mensaje de error -->
+<div class="alert-toast error" *ngIf="mensajeError">
+  {{ mensajeError }}
+</div>
 
 <div class="container py-4">
   <section class="hero-section">
@@ -17,17 +26,15 @@
             [href]="'https://www.instagram.com/' + adminPerfil.instagram"
             target="_blank"
             class="social-icon instagram"
-          >
-            <i class="fab fa-instagram"></i>
-          </a>
+            ><i class="fab fa-instagram"></i
+          ></a>
           <a
             *ngIf="adminPerfil.telefono"
             [href]="'https://wa.me/' + adminPerfil.telefono"
             target="_blank"
             class="social-icon whatsapp"
-          >
-            <i class="fab fa-whatsapp"></i>
-          </a>
+            ><i class="fab fa-whatsapp"></i
+          ></a>
         </div>
       </div>
 
@@ -44,4 +51,91 @@
       ></app-turno-lista>
     </div>
   </section>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="mostrarFormulario"
+  class="modal-overlay"
+  (click)="cancelarFormulario()">
+
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Completar para reservar turno</h3>
+    <form
+      [formGroup]="formularioAnonimo"
+      (ngSubmit)="confirmarTurnoAnonimo()"
+      class="form-group mt-2"
+    >
+      <div class="mb-2">
+        <label for="nombre">Nombre y Apellido * </label>
+        <input
+          id="nombre"
+          type="text"
+          class="form-control"
+          formControlName="nombre"
+        />
+        <div
+          class="error"
+          *ngIf="
+            formularioAnonimo.get('nombre')?.invalid &&
+            (formularioAnonimo.get('nombre')?.touched ||
+              formularioAnonimo.get('nombre')?.dirty)
+          "
+        >
+          <small
+            *ngIf="formularioAnonimo.get('nombre')?.errors?.['required']"
+            class="text-danger"
+            >El nombre es obligatorio.</small
+          >
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label for="email">Email (opcional) </label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          formControlName="email"
+        />
+        <div
+          class="error"
+          *ngIf="
+            formularioAnonimo.get('email')?.invalid &&
+            (formularioAnonimo.get('email')?.touched ||
+              formularioAnonimo.get('email')?.dirty)
+          "
+        >
+          <small
+            *ngIf="formularioAnonimo.get('email')?.errors?.['email']"
+            class="text-danger"
+            >El formato del email es incorrecto.</small
+          >
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label for="telefono">Teléfono (opcional) </label>
+        <input
+          id="telefono"
+          type="text"
+          class="form-control"
+          formControlName="telefono"
+        />
+      </div>
+
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary me-2" [disabled]="formularioAnonimo.invalid">
+          Confirmar reserva
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelarFormulario()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
