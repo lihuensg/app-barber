@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TurnoService } from '../../../services/turno.service';
 import { TurnoListaComponent } from '../../../components/turno/turno-lista/turno-lista.component';
-import { parseISO, getDay } from 'date-fns';
 
 @Component({
   selector: 'app-admin-turnos',
@@ -16,10 +15,15 @@ export class AdminTurnosComponent implements OnInit {
   turnos: any[] = [];
   formularioTurno: FormGroup;
   formularioEdicion: FormGroup;
-  modoEditar: boolean = false;
+  formularioAnonimo!: FormGroup;
+  modoEditar = false;
   turnoEditar: any = null;
-
-  diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  mostrarFormulario = false;
+  turnoSeleccionado: any = null;
+  mensajeExito: string | null = null;
+  mensajeError: string | null = null;
+  turnoAEliminar: any = null;
+  mostrarModalConfirmacion = false;
 
   constructor(private turnoService: TurnoService, private fb: FormBuilder) {
     this.formularioTurno = this.fb.group({
@@ -35,13 +39,20 @@ export class AdminTurnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarTurnos();
+    this.inicializarFormulario();
+  }
+
+  inicializarFormulario() {
+    this.formularioAnonimo = this.fb.group({
+      nombre: ['', Validators.required],
+      email: ['', [Validators.email]],
+      telefono: ['']
+    });
   }
 
   cargarTurnos() {
     this.turnoService.obtenerTurnosDisponibles().subscribe({
-      next: (res) => {
-        this.turnos = res;
-      },
+      next: (res) => this.turnos = res,
       error: (err) => console.error('Error al cargar turnos', err)
     });
   }
@@ -53,11 +64,13 @@ export class AdminTurnosComponent implements OnInit {
 
     this.turnoService.crearTurno(nuevoTurno).subscribe({
       next: () => {
-        alert('Turno creado con éxito');
+        this.mostrarMensajeExito('Turno creado con éxito');
         this.formularioTurno.reset();
         this.cargarTurnos();
       },
-      error: (err) => alert('Error al crear turno: ' + err.error?.msg || err.message)
+      error: (err) => {
+        this.mostrarMensajeError('Error al crear turno');
+      }
     });
   }
 
@@ -83,67 +96,102 @@ export class AdminTurnosComponent implements OnInit {
 
     this.turnoService.actualizarTurno(this.turnoEditar.id, datosEditados).subscribe({
       next: () => {
-        alert('Turno actualizado con éxito');
+        this.mostrarMensajeExito('Turno actualizado con éxito');
         this.cancelarEdicion();
         this.cargarTurnos();
       },
-      error: (err) => alert('Error al actualizar turno: ' + err.error?.msg || err.message)
-    });
-  }
-
-  eliminarTurno(id: string) {
-    if (!confirm('¿Estás seguro que quieres eliminar este turno?')) return;
-
-    this.turnoService.eliminarTurno(id).subscribe({
-      next: () => {
-        alert('Turno eliminado con éxito');
-        this.cargarTurnos();
-      },
-      error: (err) => alert('Error al eliminar turno: ' + err.error?.msg || err.message)
-    });
-  }
-
-   solicitarTurno(turno: any) {
-    const nombre = prompt('Tu nombre:');
-    const email = prompt('Tu email:');
-    const telefono = prompt('Tu teléfono:');
-
-    if (!nombre || !email || !telefono) {
-      alert('Todos los campos son obligatorios.');
-      return;
-    }
-
-    const datos = {
-      fecha: turno.fecha,
-      hora: turno.hora,
-      nombre,
-      email,
-      telefono
-    };
-
-    this.turnoService.reservarTurnoAnonimo(datos).subscribe({
-      next: () => {
-        alert('Turno reservado con éxito');
-        this.turnoService.obtenerTurnosDisponibles().subscribe({
-          next: (res) => {
-            this.turnos = res;
-          },
-          error: (err) => console.error('Error al recargar turnos', err)
-        });
-      },
       error: (err) => {
-        console.error(err);
-        alert('Error al reservar turno');
+        this.mostrarMensajeError('Error al actualizar turno');
       }
     });
   }
 
-  // Métodos para manejar eventos del hijo TurnoListaComponent
+  confirmarEliminacion() {
+    if (!this.turnoAEliminar) return;
+
+    this.turnoService.eliminarTurno(this.turnoAEliminar.id).subscribe({
+      next: () => {
+        this.mostrarMensajeExito('Turno eliminado con éxito');
+        this.cargarTurnos();
+      },
+      error: () => {
+        this.mostrarMensajeError('Error al eliminar el turno');
+      },
+      complete: () => {
+        this.turnoAEliminar = null;
+        this.mostrarModalConfirmacion = false;
+      }
+    });
+  }
+
+  cancelarEliminacion() {
+    this.turnoAEliminar = null;
+    this.mostrarModalConfirmacion = false;
+  }
+  
+  solicitarTurno(turno: any) {
+    this.turnoSeleccionado = turno;
+    this.mostrarFormulario = true;
+    this.formularioAnonimo.reset();
+  }
+
+  cancelarFormulario() {
+    this.mostrarFormulario = false;
+    this.turnoSeleccionado = null;
+    this.formularioAnonimo.reset();
+  }
+
+  confirmarTurnoAnonimo() {
+    if (this.formularioAnonimo.invalid || !this.turnoSeleccionado) {
+      this.mostrarMensajeError('Por favor, completá los campos obligatorios correctamente.');
+      return;
+    }
+
+    const datos = {
+      fecha: this.turnoSeleccionado.fecha,
+      hora: this.turnoSeleccionado.hora,
+      nombre: this.formularioAnonimo.get('nombre')?.value,
+      email: this.formularioAnonimo.get('email')?.value || '',
+      telefono: this.formularioAnonimo.get('telefono')?.value || ''
+    };
+
+    this.turnoService.reservarTurnoAnonimo(datos).subscribe({
+      next: () => {
+        this.mostrarMensajeExito('Turno reservado con éxito');
+        this.formularioAnonimo.reset();
+        this.mostrarFormulario = false;
+        this.turnoSeleccionado = null;
+        this.cargarTurnos();
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarMensajeError(
+          err.status === 429
+            ? (err.error?.mensaje || 'Demasiadas reservas')
+            : 'Error al reservar turno, intenta nuevamente'
+        );
+      }
+    });
+  }
+
+  // Eventos del hijo
   onEditarTurno(turno: any) {
     this.prepararEdicion(turno);
   }
 
-  onEliminarTurno(turno: any) {
-    this.eliminarTurno(turno.id);
+   onEliminarTurno(turno: any) {
+    this.turnoAEliminar = turno;
+    this.mostrarModalConfirmacion = true;
+  }
+
+  // Métodos para mostrar mensajes temporales
+  mostrarMensajeExito(mensaje: string) {
+    this.mensajeExito = mensaje;
+    setTimeout(() => this.mensajeExito = null, 4000);
+  }
+
+  mostrarMensajeError(mensaje: string) {
+    this.mensajeError = mensaje;
+    setTimeout(() => this.mensajeError = null, 4000);
   }
 }

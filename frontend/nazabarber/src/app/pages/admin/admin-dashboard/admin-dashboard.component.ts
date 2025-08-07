@@ -11,11 +11,21 @@ import { TurnoService } from '../../../services/turno.service';
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent {
+  
+showAlert = false;
+  alertMessage = '';
+
   constructor(private turnoService: TurnoService) {}
 
   generarTurnos() {
     this.turnoService.generarSemana().subscribe(() => {
-      alert('Turnos generados correctamente');
+      this.alertMessage = 'Turnos generados correctamente';
+      this.showAlert = true;
+
+      // Ocultar la alerta después de 3 segundos
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 3000);
     });
   }
 }

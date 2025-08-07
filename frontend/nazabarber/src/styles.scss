@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  padding-top: 80px; // espacio para el navbar
+  background: linear-gradient(135deg, #111111, #222222);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 100px; // más espacio para el menú hamburguesa abierto
+  }
+}

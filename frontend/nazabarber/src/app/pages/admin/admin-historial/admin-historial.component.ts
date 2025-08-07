@@ -17,6 +17,11 @@ export class AdminHistorialComponent implements OnInit {
   diasFuturos: any[] = [];
   diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
+  mensajeExito: string | null = null;
+  mensajeError: string | null = null;
+  turnoPendienteCancelar: any = null;
+  mostrarModalConfirmacion = false;
+
   constructor(private turnoService: TurnoService) {}
 
   ngOnInit(): void {
@@ -27,6 +32,26 @@ export class AdminHistorialComponent implements OnInit {
       },
       error: (err) => console.error('Error al obtener historial:', err)
     });
+  }
+
+  //Para nombrar FECHAS
+  obtenerNombreDia(fechaISO: string | undefined): string {
+  if (!fechaISO) return '';
+  const fecha = parseISO(fechaISO);
+  const indiceDia = getDay(fecha); // 0 = Domingo, 1 = Lunes, ...
+  return this.diasSemana[indiceDia];
+  }
+
+  formatearFecha(fechaISO: string | undefined): string {
+  if (!fechaISO) return '';
+  const [anio, mes, dia] = fechaISO.split('-');
+  return `${dia}/${mes}/${anio}`;
+  }
+
+  formatearHora(horaStr: string | undefined): string {
+  if (!horaStr) return '';
+  // Si viene como '10:00:00', devolvemos solo '10:00'
+  return horaStr.slice(0, 5);
   }
 
   organizarTurnosPorDia(turnos: any[], tipo: 'pasados' | 'futuros') {
@@ -64,17 +89,44 @@ export class AdminHistorialComponent implements OnInit {
     }
   }
 
+  // Abre modal personalizado para confirmar
   cancelarTurno(turno: any) {
-    if (confirm(`¿Estás seguro que querés cancelar el turno de ${turno.hora} del ${turno.fecha}?`)) {
-      this.turnoService.cancelarTurno(turno.id).subscribe({
-        next: () => {
-          // Refrescar los datos después de cancelar
-          this.ngOnInit();
-        },
-        error: (err) => {
-          console.error('Error al cancelar turno:', err);
-        }
-      });
-    }
+    this.turnoPendienteCancelar = turno;
+    this.mostrarModalConfirmacion = true;
+  }
+
+  confirmarCancelacion() {
+    if (!this.turnoPendienteCancelar) return;
+
+    this.turnoService.cancelarTurno(this.turnoPendienteCancelar.id).subscribe({
+      next: () => {
+        this.mostrarMensajeExito('Turno cancelado con éxito');
+        this.mostrarModalConfirmacion = false;
+        this.turnoPendienteCancelar = null;
+        this.ngOnInit(); 
+      },
+      error: () => {
+        this.mostrarMensajeError('No se pudo cancelar el turno');
+        this.mostrarModalConfirmacion = false;
+        this.turnoPendienteCancelar = null;
+      }
+    });
+  }
+
+  cancelarModal() {
+    this.mostrarModalConfirmacion = false;
+    this.turnoPendienteCancelar = null;
+  }
+
+  // Mensajes toast personalizados
+  mostrarMensajeExito(mensaje: string) {
+    this.mensajeExito = mensaje;
+    setTimeout(() => this.mensajeExito = null, 4000);
+  }
+
+  mostrarMensajeError(mensaje: string) {
+    this.mensajeError = mensaje;
+    setTimeout(() => this.mensajeError = null, 4000);
   }
 }
+

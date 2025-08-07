@@ -1,187 +1,224 @@
-.turnos-overlay {
-  border-radius: 12px;
-  padding: 2rem 1rem;
-  width: 100%;
+.admin-historial {
+  font-family: 'Poppins', sans-serif;
+  padding: 2rem;
   max-width: 1000px;
-  margin: 2rem auto;
-
-  h2 {
-    text-align: center;
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-  }
-
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-}
-
-.turnos-overlay.modo-oscuro {
-  background: rgba(255, 255, 255, 0.05);
+  margin: auto;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(6px);
-  color: white;
-
-  h2, h3 {
-    color: #eba1a1;
-  }
-
-  .dia-turno {
-    background-color: rgba(255, 255, 255, 0.07);
-  }
-
-  .dia-header {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    h4 {
-      color: #fff;
-    }
-
-    .flecha {
-      color: #fff;
-    }
-  }
-
-  .turno-card {
-    background-color: rgba(255, 255, 255, 0.12);
-    border: 1px solid #ffffff33;
-    color: white;
-
-    p {
-      color: #fff;
-    }
-  }
+  border-radius: 16px;
+  position: relative;
 }
 
-.turnos-overlay.modo-claro {
-  background: #f9f9f9;
-  color: #222;
-
-  h2, h3 {
-    color: #222;
-  }
-
-  .dia-turno {
-    background-color: #fff;
-    border: 1px solid #ddd;
-  }
-
-  .dia-header {
-    background-color: #f1f1f1;
-
-    h4 {
-      color: #222;
-    }
-
-    .flecha {
-      color: #222;
-    }
-  }
-
-  .turno-card {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    color: #222;
-
-    p {
-      color: #222;
-    }
-  }
+.titulo-seccion {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  color: #eba1a1;
 }
 
-.seccion-historial {
-  margin-bottom: 3rem;
-}
-
-.dia-turno {
+.dia-card {
   margin-bottom: 1.5rem;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.dia-header {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.turnos-lista {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.turno-item {
+  background: rgba(255, 255, 255, 0.07);
   padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 1rem;
+  color: #fff;
 
-  .dia-header {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-
-    h4 {
-      margin: 0;
-      font-size: 1.3rem;
-    }
-
-    .flecha {
-      transition: transform 0.3s ease;
-      &.abierto {
-        transform: rotate(180deg);
-      }
-    }
+  span {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
   }
 
-  .turnos-lista {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-    opacity: 0;
-    padding: 0;
+  .btn-cancelar-turno {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
 
-    &.expandido {
-      max-height: 1000px;
-      opacity: 1;
-      padding-top: 1rem;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      column-gap: 2rem;
-      row-gap: 1.5rem;
-    }
-
-    .col-turno {
-      flex: 0 0 220px;
-      max-width: 220px;
-    }
-
-    .turno-card {
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
-      p {
-        margin: 0.3rem 0;
-        font-size: 1.1rem;
-      }
-
-      &:hover {
-        transform: translateY(-4px);
-      }
+    &:hover {
+      background: #c0392b;
     }
   }
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background: rgba(10, 10, 10, 0.85);
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  animation: scaleIn 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+}
+
+.modal-contenido h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #5a6268;
+}
+
+/* Animación modal */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Toasts */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  animation: fadeInOut 4s ease-in-out;
+  max-width: 300px;
+}
+
+.toast-exito {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {
-  .turnos-overlay h2 {
-    font-size: 1.6rem;
-  }
-
-  .dia-turno .dia-header h4 {
-    font-size: 1.1rem;
-  }
-
-  .col-turno {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-
-  .turno-card p {
+  .dia-header {
     font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .turno-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .turno-item span {
+    margin-right: 0;
+  }
+
+  .toast {
+    font-size: 0.9rem;
+    padding: 0.8rem 1.5rem;
   }
 }

@@ -215,6 +215,16 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
       order: [['fecha', 'DESC'], ['hora', 'DESC']]
     });
 
+    // Actualizar estado de turnos pasados a 'cortado'
+    await Promise.all(
+      turnosPasados.map(async (turno) => {
+        if (turno.estado === 'reservado') {
+          turno.estado = 'cortado';
+          await turno.save();
+        }
+      })
+    );
+    
     // Turnos futuros: desde ahora en adelante
     const turnosFuturos = await Turno.findAll({
       where: {

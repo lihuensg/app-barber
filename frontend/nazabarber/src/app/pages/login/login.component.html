@@ -10,6 +10,10 @@
         formControlName="email"
         placeholder="ejemplo@correo.com"
       />
+      <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="alert">
+        <div *ngIf="form.get('email')?.errors?.['required']">El email es requerido</div>
+        <div *ngIf="form.get('email')?.errors?.['email']">El formato del email no es válido</div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -20,6 +24,9 @@
         formControlName="contrasena"
         placeholder="Tu contraseña"
       />
+      <div *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid" class="alert">
+        La contraseña es requerida
+      </div>
     </div>
 
     <button class="btn mt-3" type="submit" [disabled]="form.invalid">Entrar</button>

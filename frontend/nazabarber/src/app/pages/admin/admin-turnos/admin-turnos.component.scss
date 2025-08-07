@@ -1,75 +1,284 @@
 .admin-turnos {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: #fefefe; /* fondo blanco clarito */
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.85);
+  min-height: 100vh;
+}
+
+.admin-turnos h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+.turnos-overlay {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.formulario-turno {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  padding: 1.8rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.formulario-turno h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+  color: #fff;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+label {
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+input[type='date'],
+input[type='time'],
+input[type='text'],
+input[type='email'] {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1.8px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 8px rgba(30, 144, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+button[type='submit'],
+button.cancelar {
+  padding: 0.55rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button[type='submit'] {
+  background-color: #1e90ff;
+  color: #fff;
+}
+
+button[type='submit']:hover {
+  background-color: #1a75d1;
+}
+
+button.cancelar {
+  background-color: #444a55;
+  color: #fff;
+  margin-left: 0.7rem;
+}
+
+button.cancelar:hover {
+  background-color: #363c45;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: rgba(10, 10, 10, 0.85);
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  animation: scaleIn 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.modal-content h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  gap: 0.7rem;
+}
+
+/* Error y validación */
+.error small {
+  color: #ff1a1a;
+  font-size: 0.85rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  animation: fadeInOut 4s ease-in-out;
+  max-width: 300px;
+}
+
+.toast-exito {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background: #1e1e1e;
+  padding: 2rem;
   border-radius: 12px;
-  color: #222; /* texto oscuro */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  color: white;
+}
 
-  h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-weight: 700;
-    color: #111;
+.modal-botones {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+}
+
+
+/* Animaciones */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  .formulario-crear,
-  .edicion-turno form {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.8rem;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    input {
-      flex: 1 1 120px;
-      padding: 0.5rem 0.8rem;
-      font-size: 1rem;
-      border: 1.8px solid #ccc;
-      border-radius: 8px;
-      transition: border-color 0.3s ease;
-
-      &:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
-      }
-    }
-
-    button {
-      flex-shrink: 0;
-      padding: 0.5rem 1.2rem;
-      border: none;
-      border-radius: 8px;
-      background-color: #007bff;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-
-      &:hover:not(:disabled) {
-        background-color: #0056b3;
-      }
-
-      &:disabled {
-        background-color: #a8c5f7;
-        cursor: not-allowed;
-      }
-    }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
   }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
 
-  .edicion-turno {
-    background-color: #fafafa;
+@keyframes fadein {
+  from {
+    opacity: 0;
+    top: 0px;
+  }
+  to {
+    opacity: 1;
+    top: 20px;
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-content,
+  .formulario-turno {
     padding: 1.5rem 1rem;
-    border-radius: 12px;
-    border: 1px solid #ddd;
+    width: 92%;
   }
 
-  /* Mensajes alert */
-  .alert {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-weight: 600;
+  input,
+  label {
+    font-size: 0.95rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
   }
 }

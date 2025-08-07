@@ -1,111 +1,137 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #111111, #222222);
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
-}
-
-.register-container {
+.registro-container {
   max-width: 400px;
   margin: 6rem auto;
   padding: 2.5rem;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 2rem;
+  background: rgba(0, 0, 0, 0.6); // Fondo más oscuro para mejor contraste
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
   color: #fff;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-input {
-  padding: 0.8rem 1rem;
-  margin-bottom: 1.5rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #1c1c1c;
-  color: #fff;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-input:focus {
-  box-shadow: 0 0 5px #00bcd4;
-  border: 1px solid #00bcd4;
-}
-
-button {
-  padding: 0.9rem;
-  background: #00bcd4;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  color: #000;
-}
-
-button:hover {
-  background: #019db3;
-}
-
-a {
-  text-align: center;
-  display: block;
-  margin-top: 1rem;
-  color: #00bcd4;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.error-message {
-  color: #ff5252;
-  font-size: 0.85rem;
-  margin-top: -1rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-/* ✅ Responsive para celular */
-@media (max-width: 480px) {
-  .login-container,
-  .register-container {
-    margin: 3rem 1rem;
-    padding: 2rem;
-  }
 
   h2 {
-    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
   }
 
-  input,
-  button {
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+
+      &::placeholder {
+        color: #ccc;
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 6px #fff;
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 0.6rem;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+
+  .alert {
+    text-align: center;
     font-size: 0.95rem;
-    padding: 0.75rem;
+    color: #ffcccc;
+    margin-top: 1rem;
   }
 
-  label {
-    font-size: 0.9rem;
+  .crear-cuenta {
+    margin-top: 2rem;
+    text-align: center;
+
+    p {
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .btn {
+      width: auto;
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 0.4rem 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: #fff;
+        color: #000;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .registro-container {
+    margin: 3rem 1rem;
+    padding: 2rem;
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 12px;
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+
+      input {
+        padding: 0.5rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    .btn {
+      padding: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .crear-cuenta {
+      p {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
   }
 }

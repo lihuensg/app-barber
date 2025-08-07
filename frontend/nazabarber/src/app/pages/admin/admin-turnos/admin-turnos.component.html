@@ -1,33 +1,139 @@
 <div class="admin-turnos">
   <h2>Gestión de Turnos</h2>
+  <!-- Mensaje tipo toast flotante -->
+  <div *ngIf="mensajeExito" class="toast toast-exito">
+    {{ mensajeExito }}
+  </div>
+
+  <div *ngIf="mensajeError" class="toast toast-error">
+    {{ mensajeError }}
+  </div>
 
   <!-- FORMULARIO CREAR TURNO -->
-  <form [formGroup]="formularioTurno" (ngSubmit)="crearTurno()" class="formulario-crear">
-    <h3>Crear Turno</h3>
-    <input type="date" formControlName="fecha" />
-    <input type="time" formControlName="hora" />
-    <button type="submit" [disabled]="formularioTurno.invalid">Crear</button>
-  </form>
+  <div class="turnos-overlay">
+    <form [formGroup]="formularioTurno" (ngSubmit)="crearTurno()" class="formulario-turno">
+      <h3>Crear Turno</h3>
+      <div class="form-group">
+        <label for="fecha">Fecha</label>
+        <input id="fecha" type="date" formControlName="fecha" />
+      </div>
+      <div class="form-group">
+        <label for="hora">Hora</label>
+        <input id="hora" type="time" formControlName="hora" />
+      </div>
+      <button type="submit" [disabled]="formularioTurno.invalid">Crear</button>
+    </form>
+  </div>
 
-  <!-- LISTA DE TURNOS CON BOTONES EDITAR Y ELIMINAR -->
+  <!-- LISTA DE TURNOS -->
   <app-turno-lista
     [turnos]="turnos"
     [editable]="true"
     [claseEstilo]="'modo-claro'"
     (editar)="onEditarTurno($event)"
     (eliminar)="onEliminarTurno($event)"
-    (reservar)="solicitarTurno($event)"
-  >
+    (reservar)="solicitarTurno($event)">
   </app-turno-lista>
 
-  <!-- FORMULARIO EDITAR TURNO -->
-  <div class="edicion-turno" *ngIf="modoEditar">
-    <h3>Editar Turno</h3>
-    <form [formGroup]="formularioEdicion" (ngSubmit)="editarTurno()">
-      <input type="date" formControlName="fecha" />
-      <input type="time" formControlName="hora" />
-      <button type="submit" [disabled]="formularioEdicion.invalid">Guardar cambios</button>
-      <button type="button" (click)="cancelarEdicion()">Cancelar</button>
-    </form>
+  <!-- MODAL EDITAR TURNO -->
+  <div class="modal" *ngIf="modoEditar">
+    <div class="modal-content">
+      <form [formGroup]="formularioEdicion" (ngSubmit)="editarTurno()" class="formulario-turno">
+        <h3>Editar Turno</h3>
+        <div class="form-group">
+          <label for="fechaEdit">Fecha</label>
+          <input id="fechaEdit" type="date" formControlName="fecha" />
+        </div>
+        <div class="form-group">
+          <label for="horaEdit">Hora</label>
+          <input id="horaEdit" type="time" formControlName="hora" />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" [disabled]="formularioEdicion.invalid">Guardar cambios</button>
+          <button type="button" class="cancelar" (click)="cancelarEdicion()">Cancelar</button>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Modal Reserva -->
+  <div
+    class="modal"
+    *ngIf="mostrarFormulario"
+    (click)="cancelarFormulario()">
+
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <form
+        [formGroup]="formularioAnonimo"
+        (ngSubmit)="confirmarTurnoAnonimo()"
+        class="formulario-turno"
+      >
+        <h3>Reservar turno</h3>
+
+        <div class="form-group">
+          <label for="nombre">Nombre y Apellido *</label>
+          <input id="nombre" type="text" formControlName="nombre" />
+          <div
+            class="error"
+            *ngIf="
+              formularioAnonimo.get('nombre')?.invalid &&
+              (formularioAnonimo.get('nombre')?.touched ||
+                formularioAnonimo.get('nombre')?.dirty)
+            "
+          >
+            <small
+              *ngIf="formularioAnonimo.get('nombre')?.errors?.['required']"
+              class="text-danger"
+              >El nombre es obligatorio.</small
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (opcional)</label>
+          <input id="email" type="email" formControlName="email" />
+          <div
+            class="error"
+            *ngIf="
+              formularioAnonimo.get('email')?.invalid &&
+              (formularioAnonimo.get('email')?.touched ||
+                formularioAnonimo.get('email')?.dirty)
+            "
+          >
+            <small
+              *ngIf="formularioAnonimo.get('email')?.errors?.['email']"
+              class="text-danger"
+              >El formato del email es incorrecto.</small
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono (opcional)</label>
+          <input id="telefono" type="text" formControlName="telefono" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" [disabled]="formularioAnonimo.invalid">
+            Confirmar reserva
+          </button>
+          <button type="button" class="cancelar" (click)="cancelarFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+<div *ngIf="mostrarModalConfirmacion" class="modal-overlay">
+  <div class="modal-contenido">
+    <h2>¿Eliminar turno?</h2>
+    <p>Esta acción no se puede deshacer.</p>
+    <div class="modal-botones">
+      <button (click)="confirmarEliminacion()" class="btn btn-danger">Eliminar</button>
+      <button (click)="cancelarEliminacion()" class="btn btn-cancelar">Cancelar</button>
+    </div>
+  </div>
+</div>
 </div>
