@@ -42,11 +42,23 @@
       </a>
     </li>
 
-    <!-- Logout -->
+    <!-- Logout: abre modal de confirmación -->
     <li *ngIf="estaLogueado">
-      <a (click)="logout()">
+      <a (click)="abrirModalLogout()">
         <i class="fas fa-sign-out-alt"></i> Cerrar sesión
       </a>
     </li>
   </ul>
 </nav>
+
+<!-- Modal de confirmación para cerrar sesión -->
+<div *ngIf="mostrarModalLogout" class="modal-overlay" (click)="cancelarLogout()">
+  <div class="modal-contenido" (click)="$event.stopPropagation()">
+    <h3>¿Estás seguro que querés cerrar sesión?</h3>
+
+    <div class="modal-botones">
+      <button class="btn btn-danger" (click)="confirmarLogout()">Sí, cerrar sesión</button>
+      <button class="btn btn-cancelar" (click)="cancelarLogout()">Cancelar</button>
+    </div>
+  </div>
+</div>

@@ -48,6 +48,6 @@ export class LoginComponent {
   }
 
   irACrearCuenta() {
-    this.router.navigate(['/registro']); // <-- falta agregar esta ruta de crear usuario 
+    this.router.navigate(['/registro']);
   }
 }

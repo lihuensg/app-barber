@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class NavbarComponent {
   menuAbierto = false;
+  mostrarModalLogout = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -40,8 +41,17 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
-  logout() {
+  abrirModalLogout() {
+    this.mostrarModalLogout = true;
+  }
+
+  cancelarLogout() {
+    this.mostrarModalLogout = false;
+  }
+
+  confirmarLogout() {
     this.authService.logout();
+    this.mostrarModalLogout = false;
     this.router.navigate(['/']);
   }
 }
