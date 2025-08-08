@@ -20,7 +20,7 @@
 
     <button
       *ngIf="puedeEliminarPost()"
-      (click)="confirmarEliminarPost()"
+      (click)="abrirModalEliminarPost()"
       class="btn btn-sm btn-outline-danger"
     >
       🗑
@@ -57,33 +57,50 @@
       <div *ngIf="post.Comentarios?.length > 0; else sinComentarios">
         <div
           *ngFor="let comentario of post.Comentarios"
-          class="mb-1 d-flex justify-content-between"
+          class="comentario-item"
         >
-          <div>
+          <div class="comentario-texto">
             <strong>{{ comentario.Usuario?.nombre || "Anon" }}</strong
-            >: {{ comentario.contenido }}
+            >:
+            {{ comentario.contenido }}
           </div>
           <button
             *ngIf="puedeEliminarComentario(comentario)"
-            class="btn btn-sm btn-link text-danger p-0"
+            class="comentario-eliminar-btn"
             (click)="eliminarComentario(comentario.id)"
+            aria-label="Eliminar comentario"
           >
-            ❌
+            Eliminar
           </button>
         </div>
       </div>
+
       <ng-template #sinComentarios>
         <p class="text-muted">No hay comentarios todavía.</p>
       </ng-template>
-      <div class="d-flex mt-2">
+
+      <div class="comentario-input-wrapper">
         <input
           type="text"
-          class="form-control form-control-sm me-2"
           [(ngModel)]="nuevoComentario"
           placeholder="Escribí un comentario..."
+          (keyup.enter)="enviarComentario()"
         />
-        <button class="btn btn-sm btn-primary" (click)="enviarComentario()">
-          Enviar
+        <button (click)="enviarComentario()">Enviar</button>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Confirmación Eliminar Post -->
+  <div *ngIf="mostrarModalEliminarPost" class="modal-confirmacion-backdrop">
+    <div class="modal-confirmacion">
+      <h3>Confirmar eliminación</h3>
+      <p>¿Estás seguro que querés eliminar esta publicación?</p>
+      <div class="modal-buttons">
+        <button (click)="confirmarEliminarPost()" class="btn-confirmar">
+          Sí, eliminar
+        </button>
+        <button (click)="cancelarEliminarPost()" class="btn-cancelar">
+          Cancelar
         </button>
       </div>
     </div>

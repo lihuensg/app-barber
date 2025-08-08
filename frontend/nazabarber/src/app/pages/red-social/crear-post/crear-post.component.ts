@@ -13,6 +13,7 @@ import { RedSocialService } from '../../../services/red-social.service';
 export class CrearPostComponent {
   descripcion: string = '';
   imagen: File | null = null;
+  imagenURL: string | null = null;
   mensaje: string = '';
 
   constructor(private redSocialService: RedSocialService) {}
@@ -21,7 +22,19 @@ export class CrearPostComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.imagen = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagenURL = e.target.result;
+      };
+      reader.readAsDataURL(this.imagen);
     }
+  }
+
+  eliminarImagen() {
+    this.imagen = null;
+    this.imagenURL = null;
+    (document.getElementById('imagen') as HTMLInputElement).value = '';
   }
 
   publicarPost() {
@@ -39,6 +52,7 @@ export class CrearPostComponent {
         this.mensaje = 'Post publicado con éxito.';
         this.descripcion = '';
         this.imagen = null;
+        this.imagenURL = null;
         (document.getElementById('imagen') as HTMLInputElement).value = '';
       },
       error: (err) => {

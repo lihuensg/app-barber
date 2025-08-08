@@ -1,10 +1,11 @@
 body {
   margin: 0;
-  padding-top: 80px; // espacio para el navbar
+  padding-top: 80px;
   background: linear-gradient(135deg, #111111, #222222);
   font-family: 'Poppins', sans-serif;
   color: #fff;
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
 @media (max-width: 768px) {

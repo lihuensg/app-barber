@@ -18,9 +18,20 @@ export class MisTurnosComponent implements OnInit {
   diasFuturos: any[] = [];
   diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
-  constructor(private usuarioService: UsuarioService, private turnoService: TurnoService) {}
+  mensajeExito: string | null = null;
+  mensajeError: string | null = null;
+
+  turnoACancelar: any = null;
+  mostrarModalCancelar = false;
+
+  constructor(private usuarioService: UsuarioService, private turnoService: TurnoService) {
+  }
 
   ngOnInit(): void {
+    this.cargarTurnos();
+  }
+
+  cargarTurnos() {
     this.usuarioService.obtenerMisTurnos().subscribe({
       next: ({ futuros, pasados }) => {
         this.organizarTurnosPorDia(futuros, 'futuros');
@@ -63,17 +74,41 @@ export class MisTurnosComponent implements OnInit {
     }
   }
 
-  cancelarTurno(turno: any) {
-    if (confirm(`¿Estás seguro que querés cancelar el turno de ${turno.hora} del ${turno.fecha}?`)) {
-      this.turnoService.cancelarTurnoCliente(turno.id).subscribe({
-        next: () => {
-          // Refrescar los datos después de cancelar
-          this.ngOnInit();
-        },
-        error: (err) => {
-          console.error('Error al cancelar turno:', err);
-        }
-      });
-    }
+  solicitarCancelarTurno(turno: any) {
+    this.turnoACancelar = turno;
+    this.mostrarModalCancelar = true;
+  }
+
+  confirmarCancelacion() {
+    if (!this.turnoACancelar) return;
+
+    this.turnoService.cancelarTurnoCliente(this.turnoACancelar.id).subscribe({
+      next: () => {
+        this.mostrarMensajeExito('Turno cancelado con éxito');
+        this.cargarTurnos();
+      },
+      error: () => {
+        this.mostrarMensajeError('Error al cancelar el turno');
+      },
+      complete: () => {
+        this.turnoACancelar = null;
+        this.mostrarModalCancelar = false;
+      }
+    });
+  }
+
+  cancelarModal() {
+    this.turnoACancelar = null;
+    this.mostrarModalCancelar = false;
+  }
+
+  mostrarMensajeExito(mensaje: string) {
+    this.mensajeExito = mensaje;
+    setTimeout(() => (this.mensajeExito = null), 4000);
+  }
+
+  mostrarMensajeError(mensaje: string) {
+    this.mensajeError = mensaje;
+    setTimeout(() => (this.mensajeError = null), 4000);
   }
 }

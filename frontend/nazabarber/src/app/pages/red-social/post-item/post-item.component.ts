@@ -32,6 +32,9 @@ export class PostItemComponent implements OnInit {
   yaLikeado = false;
   likeCount = 0;
 
+  // Variables para modal eliminar post
+  mostrarModalEliminarPost: boolean = false;
+
   constructor(
     private redSocialService: RedSocialService,
     private authService: AuthService
@@ -82,16 +85,19 @@ export class PostItemComponent implements OnInit {
     });
   }
 
-  eliminarPost() {
-    this.redSocialService.eliminarPost(this.post.id).subscribe(() => {
-      this.post.eliminado = true;
-    });
+  abrirModalEliminarPost() {
+    this.mostrarModalEliminarPost = true;
+  }
+
+  cancelarEliminarPost() {
+    this.mostrarModalEliminarPost = false;
   }
 
   confirmarEliminarPost() {
-  if (confirm('¿Estás seguro que querés eliminar esta publicación?')) {
-    this.eliminarPost();
-  }
+    this.redSocialService.eliminarPost(this.post.id).subscribe(() => {
+      this.post.eliminado = true;
+      this.mostrarModalEliminarPost = false;
+    });
   }
 
   puedeEliminarPost(): boolean {

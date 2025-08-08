@@ -8,6 +8,14 @@
     class="input-textarea"
   ></textarea>
 
+  <div class="imagen-preview-wrapper" *ngIf="imagenURL">
+    <img [src]="imagenURL" alt="Vista previa" class="imagen-preview" />
+    <button class="btn-eliminar-imagen" (click)="eliminarImagen()">🗑️</button>
+  </div>
+
+  <label class="input-file-label" for="imagen">
+    📷 Seleccionar imagen
+  </label>
   <input
     type="file"
     id="imagen"
@@ -16,7 +24,7 @@
     class="input-file"
   />
 
-  <button (click)="publicarPost()" class="btn-publicar">Publicar</button>
+  <button (click)="publicarPost()" class="btn-publicar">🚀 Publicar</button>
 
   <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
 </div>

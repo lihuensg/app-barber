@@ -1,7 +1,11 @@
-<div class="turnos-overlay modo-claro">
+<div class="turnos-overlay">
   <h2>Mis Turnos</h2>
 
-  <!-- FUTUROS -->
+  <!-- Toasts -->
+  <div *ngIf="mensajeExito" class="toast toast-exito">{{ mensajeExito }}</div>
+  <div *ngIf="mensajeError" class="toast toast-error">{{ mensajeError }}</div>
+
+  <!-- Turnos Futuros -->
   <div class="seccion-historial">
     <h3>🕓 Turnos Futuros</h3>
     <ng-container *ngIf="diasFuturos.length; else sinFuturos">
@@ -10,12 +14,21 @@
           <h4>{{ dia.nombre }} ({{ dia.fechaFormateada }})</h4>
           <span class="flecha" [class.abierto]="dia.expandido">▼</span>
         </div>
+
         <div class="turnos-lista" [class.expandido]="dia.expandido">
           <div class="row">
-            <div class="col-turno" *ngFor="let turno of turnosPorDiaFuturos[dia.fecha]">
+            <div
+              class="col-turno"
+              *ngFor="let turno of turnosPorDiaFuturos[dia.fecha]"
+            >
               <div class="turno-card">
                 <p><strong>{{ turno.hora }}</strong></p>
-                <button class="cancelar-btn" (click)="cancelarTurno(turno)">Cancelar</button>
+                <button
+                  class="cancelar-btn"
+                  (click)="solicitarCancelarTurno(turno)"
+                >
+                  Cancelar
+                </button>
               </div>
             </div>
           </div>
@@ -27,7 +40,7 @@
     </ng-template>
   </div>
 
-  <!-- PASADOS -->
+  <!-- Turnos Pasados -->
   <div class="seccion-historial">
     <h3>📜 Turnos Pasados</h3>
     <ng-container *ngIf="diasPasados.length; else sinPasados">
@@ -36,12 +49,16 @@
           <h4>{{ dia.nombre }} ({{ dia.fechaFormateada }})</h4>
           <span class="flecha" [class.abierto]="dia.expandido">▼</span>
         </div>
+
         <div class="turnos-lista" [class.expandido]="dia.expandido">
           <div class="row">
-            <div class="col-turno" *ngFor="let turno of turnosPorDiaPasados[dia.fecha]">
+            <div
+              class="col-turno"
+              *ngFor="let turno of turnosPorDiaPasados[dia.fecha]"
+            >
               <div class="turno-card">
                 <p><strong>{{ turno.hora }}</strong></p>
-                <p class="estado-pasado">Realizado</p>
+                <p class="estado-pasado">Cortado</p>
               </div>
             </div>
           </div>
@@ -51,5 +68,21 @@
     <ng-template #sinPasados>
       <p>No tenés turnos pasados.</p>
     </ng-template>
+  </div>
+</div>
+
+<!-- Modal Confirmación Cancelar -->
+<div *ngIf="mostrarModalCancelar" class="modal-overlay">
+  <div class="modal-contenido">
+    <h2>¿Cancelar turno?</h2>
+    <p>Esta acción no se puede deshacer.</p>
+    <div class="modal-botones">
+      <button (click)="confirmarCancelacion()" class="btn btn-danger">
+        Cancelar turno
+      </button>
+      <button (click)="cancelarModal()" class="btn btn-cancelar">
+        Volver
+      </button>
+    </div>
   </div>
 </div>
