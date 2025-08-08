@@ -13,6 +13,7 @@ import {  reservarTurnoAnonimo,
 import { check } from 'express-validator';
 import { validarCampos } from '../middlewares/validarCampos.js';
 import { limiteTurnosAnonimos } from '../middlewares/limiteTurnosAnonimos.js';
+import { limiteTurnosPorIP } from '../middlewares/limiteTurnosPorIP.js'
 import { validarToken } from '../middlewares/validarToken.js';
 import { esAdmin } from '../middlewares/esAdmin.js';
 
@@ -26,7 +27,8 @@ router.post(
     check('hora', 'La hora es obligatoria').notEmpty(),
     check('nombre', 'El nombre es obligatorio').notEmpty(),
     validarCampos,
-    limiteTurnosAnonimos
+    limiteTurnosAnonimos,
+    limiteTurnosPorIP
   ],
   reservarTurnoAnonimo
 );

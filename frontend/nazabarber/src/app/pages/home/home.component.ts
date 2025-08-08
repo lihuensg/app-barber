@@ -132,7 +132,7 @@ export class HomeComponent implements OnInit {
         console.error(err);
         this.mensajeError = err.status === 429
         ? (err.error?.mensaje)
-        :'Error al reservar turno, intenta nuevamente';
+        :'Has alcanzado el límite máximo de reservas permitidas. Por favor, intenta nuevamente más tarde.';
         this.mensajeExito = null;
         // Ocultar mensaje de error después de 3s
         setTimeout(() => this.mensajeError = null, 3000);

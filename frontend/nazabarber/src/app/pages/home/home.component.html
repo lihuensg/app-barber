@@ -1,14 +1,4 @@
 <app-navbar></app-navbar>
-<!-- Mensaje de éxito -->
-<div class="alert-toast success" *ngIf="mensajeExito">
-  {{ mensajeExito }}
-</div>
-
-<!-- Mensaje de error -->
-<div class="alert-toast error" *ngIf="mensajeError">
-  {{ mensajeError }}
-</div>
-
 <div class="container py-4">
   <section class="hero-section">
     <img src="assets/naza.jpg" alt="NazaBarber" class="hero-img" />
@@ -60,6 +50,13 @@
   (click)="cancelarFormulario()">
 
   <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="alert-toast success" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+    <div class="alert-toast error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
     <h3>Reservar turno</h3>
     <form
       [formGroup]="formularioAnonimo"

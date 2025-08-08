@@ -30,5 +30,11 @@ export const Turno = sequelize.define('Turno', {
   telefono: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  ip: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 });
+
+

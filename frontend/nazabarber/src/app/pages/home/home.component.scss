@@ -135,6 +135,17 @@
   z-index: 10000; 
 }
 
+.modal-content .alert-toast {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: auto;
+}
+
 .modal-content {
   background: rgba(10, 10, 10, 0.85); /* Fondo negro con alta opacidad */
   padding: 2rem 2.5rem;
@@ -245,7 +256,7 @@ button[type='button']:hover {
   padding: 14px 28px;
   border-radius: 8px;
   color: #fff;
-  z-index: 2000;
+  z-index: 11000; 
   font-size: 1rem;
   font-weight: 600;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
