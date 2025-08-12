@@ -19,7 +19,7 @@ export const limiteTurnosPorIP = async (req, res, next) => {
 
     const diferencia = ahora.diff(fechaUltimoTurno, 'hour');
 
-    if (diferencia < 24) {
+    if (diferencia < 12) { // si el último turno es dentro de las últimas 12 horas
       return res.status(429).json({
         mensaje: 'Demasiadas reservas hechas desde esta IP. Intenta más tarde.'
       });
