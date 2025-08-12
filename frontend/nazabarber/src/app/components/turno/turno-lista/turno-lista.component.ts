@@ -46,13 +46,17 @@ export class TurnoListaComponent implements OnChanges {
       fecha.getFullYear() === ahora.getFullYear() &&
       fecha.getMonth() === ahora.getMonth() &&
       fecha.getDate() === ahora.getDate()
-    ) {
+      ) {
       const [h, m] = turno.hora.split(':').map(Number);
       const horaTurno = new Date();
       horaTurno.setHours(h, m, 0, 0);
 
-      return horaTurno >= ahora;
-    }
+      // Restar 15 minutos a la hora del turno
+      const horaTurnoMenos15 = new Date(horaTurno.getTime() - 15 * 60 * 1000);
+
+      // Mostrar solo si la hora actual es menor o igual a horaTurnoMenos15
+      return ahora <= horaTurnoMenos15;
+      }
 
     // Si es en el futuro, mostrarlo
     return fecha > ahora;
