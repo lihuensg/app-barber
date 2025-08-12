@@ -88,8 +88,6 @@ export const reservarTurnoAnonimo = async (req, res) => {
       const mensajeWhatsApp = `📅 Nueva reserva: ${nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Mail: ${
         email || "No proporcionado"
       }, Teléfono: ${telefono || "No proporcionado"}`;
-      console.log("Número admin a enviar:", numeroFormateado);
-      console.log("Mensaje:", mensajeWhatsApp);
       await enviarMensajeWhatsApp(numeroFormateado, mensajeWhatsApp);
     }
 
@@ -126,6 +124,22 @@ export const reservarTurnoCliente = async (req, res) => {
     turno.telefono = cliente.telefono;
 
     await turno.save();
+
+    // Obtener teléfono del admin
+    const admin = await Usuario.findOne({
+      where: { rol: "admin" },
+      attributes: ["telefono"],
+    });
+
+    if (admin && admin.telefono) {
+      const numeroAdmin = admin.telefono.replace(/\D/g, "");
+      const numeroFormateado = `549${numeroAdmin}`;
+      const fechaArg = formatearFechaArg(fecha);
+      const mensajeWhatsApp = `📅 Nueva reserva: ${cliente.nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Teléfono: ${cliente.telefono || 'No informado'}, Email: ${cliente.email || 'No informado'}`;
+      await enviarMensajeWhatsApp(numeroFormateado, mensajeWhatsApp);
+    } else {
+      console.warn("No se encontró teléfono de admin para enviar WhatsApp");
+    }
 
     res.status(201).json({ mensaje: "Turno reservado con éxito", turno });
   } catch (error) {
