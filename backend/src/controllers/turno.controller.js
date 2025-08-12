@@ -3,6 +3,9 @@ import { Usuario } from "../models/usuarios.js";
 import { enviarEmailConfirmacion } from "../utils/email.js";
 import { generarTurnosDeLaSemana } from "../utils/generarTurnos.js";
 import { Op } from "sequelize";
+import { enviarMensajeWhatsApp } from "../utils/callmebot.js";
+
+// Funciones auxiliares
 
 function sumarMinutos(horaStr, minutos) {
   const [h, m] = horaStr.split(":").map(Number);
@@ -18,6 +21,12 @@ function hayConflicto(turnos, horaNueva) {
     const diff = Math.abs(horaNuevaDate - horaExistente) / 60000;
     return diff < 40;
   });
+}
+
+function formatearFechaArg(fechaStr) {
+  // fechaStr viene tipo "2025-08-12" (YYYY-MM-DD)
+  const [anio, mes, dia] = fechaStr.split('-');
+  return `${dia}/${mes}/${anio}`;
 }
 
 export const reservarTurnoAnonimo = async (req, res) => {
@@ -59,7 +68,29 @@ export const reservarTurnoAnonimo = async (req, res) => {
 
     // Solo enviar el mail si se proporcionó
     if (email && email.trim() !== "") {
-      await enviarEmailConfirmacion(email, fecha, hora);
+      const fechaArg = formatearFechaArg(fecha);
+
+      await enviarEmailConfirmacion(email, fechaArg, hora);
+    }
+
+    // Obtener teléfono del admin desde la base
+    const admin = await Usuario.findOne({
+      where: { rol: "admin" },
+      attributes: ["telefono"],
+    });
+
+    if (!admin || !admin.telefono) {
+      console.warn("No se encontró teléfono de admin para enviar WhatsApp");
+    } else {
+      const numeroAdmin = admin.telefono.replace(/\D/g, ""); // limpiar caracteres no numéricos
+      const numeroFormateado = `549${numeroAdmin}`; // agregá código país si es necesario
+      const fechaArg = formatearFechaArg(fecha);
+      const mensajeWhatsApp = `📅 Nueva reserva: ${nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Mail: ${
+        email || "No proporcionado"
+      }, Teléfono: ${telefono || "No proporcionado"}`;
+      console.log("Número admin a enviar:", numeroFormateado);
+      console.log("Mensaje:", mensajeWhatsApp);
+      await enviarMensajeWhatsApp(numeroFormateado, mensajeWhatsApp);
     }
 
     res.status(201).json({ mensaje: "Turno reservado con éxito", turno });

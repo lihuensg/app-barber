@@ -20,7 +20,7 @@
   </div>
 
   <div class="form-group">
-    <label for="telefono">Teléfono</label>
+    <label for="telefono">Teléfono (Formato EJ:"3447505050")</label>
     <input id="telefono" formControlName="telefono" placeholder="Tu teléfono" />
     <div *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid" class="alert">
       El teléfono es requerido
