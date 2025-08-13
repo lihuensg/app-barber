@@ -1,4 +1,13 @@
 <app-navbar></app-navbar>
+<!-- Toast para usuarios logueados -->
+<div class="toast toast-exito" *ngIf="mensajeExito && !mostrarFormulario">
+  {{ mensajeExito }}
+</div>
+
+<div class="toast toast-error" *ngIf="mensajeError && !mostrarFormulario">
+  {{ mensajeError }}
+</div>
+
 <div class="container py-4">
   <section class="hero-section">
     <img src="assets/naza.jpg" alt="NazaBarber" class="hero-img" />

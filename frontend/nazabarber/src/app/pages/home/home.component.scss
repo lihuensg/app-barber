@@ -273,6 +273,37 @@ button[type='button']:hover {
   background-color: rgba(231, 76, 60, 0.95); 
 }
 
+.toast {
+    position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 28px;
+  border-radius: 8px;
+  color: #fff;
+  z-index: 11000; 
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  animation: fadein 0.5s ease;
+}
+
+.toast-exito {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; transform: translateY(-10px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+
 @keyframes fadein {
   from { opacity: 0; top: 0px; }
   to { opacity: 1; top: 20px; }
