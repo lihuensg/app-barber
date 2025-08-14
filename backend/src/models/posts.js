@@ -11,6 +11,10 @@ export const Post = sequelize.define('Post', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  cloudinary_id: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   descripcion: {
     type: DataTypes.TEXT,
     allowNull: true

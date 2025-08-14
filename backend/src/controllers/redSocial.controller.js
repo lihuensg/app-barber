@@ -2,21 +2,41 @@ import { Post } from "../models/posts.js";
 import { Like } from "../models/likes.js";
 import { Comentario } from "../models/comentarios.js";
 import { Usuario } from "../models/usuarios.js";
+import cloudinary from "../utils/cloudinary.js";
+import fs from 'fs';
+
 
 export const crearPost = async (req, res) => {
   try {
     const { descripcion } = req.body;
     const usuario_id = req.user.id;
-    const imagen_url = req.file ? req.file.path : null;
+
+    let imagen_url = null;
+    let cloudinary_id = null;
+
+    if (req.file) {
+        try {
+          const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "posts",
+          });
+          imagen_url = result.secure_url;
+          cloudinary_id = result.public_id;
+        } catch (err) {
+          console.error("Error al subir a Cloudinary:", err);
+        } finally {
+          fs.unlink(req.file.path, err => {
+            if (err) console.error("Error al eliminar archivo temporal:", err);
+          });
+        }
+    }
 
     const nuevoPost = await Post.create({
-      imagen_url,
       descripcion,
       usuario_id,
+      imagen_url,
+      cloudinary_id,
     });
 
-    console.log('Post creado realmente:', nuevoPost?.toJSON());
-    
     const postConUsuario = await Post.findByPk(nuevoPost.id, {
       include: {
         model: Usuario,
@@ -35,25 +55,23 @@ export const obtenerPosts = async (req, res) => {
   try {
     const posts = await Post.findAll({
       include: [
-        { model: Usuario, 
-          attributes: ["id", "nombre", "email", "foto_perfil"] },
-        { model: Comentario,
-          include : {
-            model: Usuario,
-            attributes: ["id", "nombre"]
-          },
-         },
-        { model: Like, 
-          include: {
-            model: Usuario,
-            attributes: ["id", "nombre"]
-          }
-        },
-        
+        { model: Usuario, attributes: ["id", "nombre", "email", "foto_perfil"] },
+        { model: Comentario, include: { model: Usuario, attributes: ["id", "nombre"] } },
+        { model: Like, include: { model: Usuario, attributes: ["id", "nombre"] } },
       ],
       order: [["creado_en", "DESC"]],
     });
-    res.json(posts);
+
+    // Transformamos la URL para cada post
+    const postsConURL = posts.map(post => {
+      const p = post.toJSON();
+      if (p.imagen_url && !p.imagen_url.startsWith("http")) {
+        p.imagen_url = `${req.protocol}://${req.get("host")}/${p.imagen_url}`;
+      }
+      return p;
+    });
+
+    res.json(postsConURL);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al obtener posts", error });
   }
@@ -64,30 +82,20 @@ export const obtenerPostPorId = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findByPk(id, {
       include: [
-        {
-          model: Usuario,
-          attributes: ["id", "nombre", "email"],
-        },
-        {
-          model: Comentario,
-          include: {
-            model: Usuario,
-            attributes: ["id", "nombre"],
-          },
-        },
-        {
-          model: Like,
-          include: {
-            model: Usuario,
-            attributes: ["id", "nombre"],
-          },
-        },
+        { model: Usuario, attributes: ["id", "nombre", "email"] },
+        { model: Comentario, include: { model: Usuario, attributes: ["id", "nombre"] } },
+        { model: Like, include: { model: Usuario, attributes: ["id", "nombre"] } },
       ],
     });
 
     if (!post) return res.status(404).json({ mensaje: "Post no encontrado" });
 
-    res.json(post);
+    const p = post.toJSON();
+    if (p.imagen_url && !p.imagen_url.startsWith("http")) {
+      p.imagen_url = `${req.protocol}://${req.get("host")}/${p.imagen_url}`;
+    }
+
+    res.json(p);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al obtener el post", error });
   }
@@ -102,13 +110,26 @@ export const eliminarPost = async (req, res) => {
     const post = await Post.findByPk(postId);
     if (!post) return res.status(404).json({ mensaje: "Post no encontrado" });
 
-    if (post.usuario_id !== usuario_id && rol !== 'admin') {
+    // Verificar que el usuario tenga permiso
+    if (post.usuario_id !== usuario_id && rol !== "admin") {
       return res.status(403).json({ mensaje: "No autorizado" });
     }
 
+    // Si tiene imagen en Cloudinary, eliminarla
+   if (post.cloudinary_id) {
+    try {
+        await cloudinary.uploader.destroy(post.cloudinary_id);
+      } catch (err) {
+        console.error("Error al eliminar imagen en Cloudinary:", err);
+      }
+   }
+
+    // Eliminar post de la DB
     await post.destroy();
+
     res.json({ mensaje: "Post eliminado correctamente" });
   } catch (error) {
+    console.error("Error al eliminar post:", error);
     res.status(500).json({ mensaje: "Error al eliminar post", error });
   }
 };

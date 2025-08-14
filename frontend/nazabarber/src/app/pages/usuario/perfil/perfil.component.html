@@ -4,7 +4,7 @@
     <label for="fotoInput" class="foto-label">
       <img
         *ngIf="perfil.foto_perfil; else sinFoto"
-        [src]="'http://localhost:4000/uploads/perfiles/' + perfil.foto_perfil"
+        [src]="perfil.foto_perfil"
         class="foto-perfil"
         alt="Foto de perfil"
       />
@@ -30,9 +30,9 @@
     <span *ngIf="!editando['nombre']">{{ perfil.nombre }}</span>
     <input *ngIf="editando['nombre']" [(ngModel)]="perfil.nombre" type="text" />
     <button (click)="toggleEdit('nombre')">
-      {{ editando['nombre'] ? 'Guardar' : '✏️' }}
+      {{ editando["nombre"] ? "Guardar" : "✏️" }}
     </button>
-    <div class="error" *ngIf="errores['nombre']">{{ errores['nombre'] }}</div>
+    <div class="error" *ngIf="errores['nombre']">{{ errores["nombre"] }}</div>
   </div>
 
   <!-- EMAIL -->
@@ -41,40 +41,42 @@
     <span *ngIf="!editando['email']">{{ perfil.email }}</span>
     <input *ngIf="editando['email']" [(ngModel)]="perfil.email" type="email" />
     <button (click)="toggleEdit('email')">
-      {{ editando['email'] ? 'Guardar' : '✏️' }}
+      {{ editando["email"] ? "Guardar" : "✏️" }}
     </button>
-    <div class="error" *ngIf="errores['email']">{{ errores['email'] }}</div>
+    <div class="error" *ngIf="errores['email']">{{ errores["email"] }}</div>
   </div>
 
   <!-- TELÉFONO -->
   <div class="perfil-item">
     <strong>Teléfono</strong>
-    <span *ngIf="!editando['telefono']">{{ perfil.telefono || '-' }}</span>
+    <span *ngIf="!editando['telefono']">{{ perfil.telefono || "-" }}</span>
     <input
       *ngIf="editando['telefono']"
       [(ngModel)]="perfil.telefono"
       type="text"
     />
     <button (click)="toggleEdit('telefono')">
-      {{ editando['telefono'] ? 'Guardar' : '✏️' }}
+      {{ editando["telefono"] ? "Guardar" : "✏️" }}
     </button>
     <div class="error" *ngIf="errores['telefono']">
-      {{ errores['telefono'] }}
+      {{ errores["telefono"] }}
     </div>
   </div>
 
   <!-- INSTAGRAM (solo admin) -->
   <div class="perfil-item" *ngIf="esAdmin">
     <strong>Instagram</strong>
-    <span *ngIf="!editando['instagram']">{{ perfil.instagram || '-' }}</span>
+    <span *ngIf="!editando['instagram']">{{ perfil.instagram || "-" }}</span>
     <input
       *ngIf="editando['instagram']"
       [(ngModel)]="perfil.instagram"
       type="text"
     />
     <button (click)="toggleEdit('instagram')">
-      {{ editando['instagram'] ? 'Guardar' : '✏️' }}
+      {{ editando["instagram"] ? "Guardar" : "✏️" }}
     </button>
-    <div class="error" *ngIf="errores['instagram']">{{ errores['instagram'] }}</div>
+    <div class="error" *ngIf="errores['instagram']">
+      {{ errores["instagram"] }}
+    </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ import { Usuario } from '../models/usuarios.js';
 import { Turno } from '../models/turnos.js';
 import { Op } from 'sequelize';
 import { parseISO, isBefore } from 'date-fns';
+import cloudinary from '../utils/cloudinary.js';
 
 export const miPerfil = async (req, res) => {
   const usuario = await Usuario.findByPk(req.user.id, { attributes: { exclude: ['contraseña'] }});
@@ -36,7 +37,18 @@ export const actualizarPerfil = async (req, res) => {
     }
 
     if (req.file) {
-      user.foto_perfil = req.file ? req.file.filename : user.foto_perfil;
+      // Si ya tenía una foto en Cloudinary, eliminarla
+      if (user.cloudinary_id) {
+        await cloudinary.uploader.destroy(user.cloudinary_id);
+      }
+
+      // Subir la nueva foto
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "perfiles"
+      });
+
+      user.foto_perfil = result.secure_url;
+      user.cloudinary_id = result.public_id;
     }
 
     user.nombre = nombre || user.nombre;
