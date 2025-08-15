@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RedSocialService {
 
-  private apiUrl = 'http://localhost:4000/api/redsocial';
+  private apiUrl = `${environment.apiUrl}/api/redsocial`;
   private headers() {
     return { Authorization: `Bearer ${this.auth.getToken()}` };
   }

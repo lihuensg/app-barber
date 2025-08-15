@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TurnoService {
-  private API = 'http://localhost:4000/api/turnos'; 
+  private API = `${environment.apiUrl}/api/turnos`;
   private headers() {
     return { Authorization: `Bearer ${this.auth.getToken()}` };
   }
