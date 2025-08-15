@@ -4,9 +4,7 @@
     <div class="user-info">
       <img
         *ngIf="post.Usuario?.foto_perfil; else sinFoto"
-        [src]="
-          'http://localhost:4000/uploads/perfiles/' + post.Usuario.foto_perfil
-        "
+        [src]="post.Usuario.foto_perfil"
         class="profile-pic"
         alt="Foto de perfil"
       />
