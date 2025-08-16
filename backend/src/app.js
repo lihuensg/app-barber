@@ -7,12 +7,22 @@ import cors from "cors";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: ["http://localhost:4200", "https://nazabarber.netlify.app"],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "http://localhost:4200",
+  "https://nazabarber.netlify.app"
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if(!origin) return callback(null, true); // para Postman o apps sin origin
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'El CORS no está permitido para este origen.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 
 
 app.use(express.json());
