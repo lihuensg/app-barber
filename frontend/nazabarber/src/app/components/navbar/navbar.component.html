@@ -16,35 +16,35 @@
 
     <!-- Red Social -->
     <li *ngIf="estaLogueado">
-      <a [routerLink]="['/red-social']">
+      <a [routerLink]="['/red-social']" (click)="cerrarMenu()">
         <i class="fas fa-users"></i> Red Social
       </a>
     </li>
 
     <!-- Panel Admin -->
     <li *ngIf="estaLogueado && esAdmin">
-      <a [routerLink]="['/admin']">
+      <a [routerLink]="['/admin']" (click)="cerrarMenu()">
         <i class="fas fa-tools"></i> Panel Admin
       </a>
     </li>
 
     <!-- Turnos usuario -->
     <li *ngIf="estaLogueado && !esAdmin">
-      <a [routerLink]="['/usuario']">
+      <a [routerLink]="['/usuario']" (click)="cerrarMenu()">
         <i class="fas fa-calendar-alt"></i> Mis turnos
       </a>
     </li>
 
     <!-- Perfil común a ambos -->
     <li *ngIf="estaLogueado">
-      <a [routerLink]="[esAdmin ? '/admin/perfil' : '/usuario/perfil']">
+      <a [routerLink]="[esAdmin ? '/admin/perfil' : '/usuario/perfil']" (click)="cerrarMenu()">
         <i class="fas fa-user-circle"></i> Perfil
       </a>
     </li>
 
     <!-- Logout: abre modal de confirmación -->
     <li *ngIf="estaLogueado">
-      <a (click)="abrirModalLogout()">
+      <a (click)="abrirModalLogout(); cerrarMenu()">
         <i class="fas fa-sign-out-alt"></i> Cerrar sesión
       </a>
     </li>

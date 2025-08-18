@@ -54,4 +54,8 @@ export class NavbarComponent {
     this.mostrarModalLogout = false;
     this.router.navigate(['/']);
   }
+  
+  cerrarMenu() {
+    this.menuAbierto = false;
+  }
 }
