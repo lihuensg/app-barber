@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
 
   cerrarAdvertencia(): void {
     this.mostrarAdvertencia = false;
-    localStorage.setItem('advertenciaMostrada', 'true');
+    sessionStorage.setItem('advertenciaMostrada', 'true');
   }
 
 
