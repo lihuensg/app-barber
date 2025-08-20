@@ -47,14 +47,16 @@ h2 {
 .turnos-lista {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease;
+  transition: max-height 0.5s ease, padding 0.5s ease;
   padding: 0 1.5rem;
+}
 
-  &.expandido {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    max-height: 1000px;
-  }
+.turnos-lista.expandido {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  /* ⚡ Permite crecer dinámicamente según el contenido */
+  max-height: 10000px; 
 }
 
 .row {
@@ -130,7 +132,7 @@ h2 {
   }
 }
 
-/* Responsive */
+/* ✅ Responsive para celulares */
 @media (max-width: 768px) {
   h2 {
     font-size: 1.5rem;
@@ -142,7 +144,7 @@ h2 {
   }
 
   .col-turno {
-    flex: 1 1 100%;
+    flex: 1 1 100%; /* ⚡ cada turno ocupa todo el ancho */
     max-width: 100%;
   }
 

@@ -1,4 +1,16 @@
 <app-navbar></app-navbar>
+
+<!-- Mensaje de advertencia -->
+<div *ngIf="mostrarAdvertencia" class="advertencia-banner">
+  <p>
+  <strong>Bienvenido</strong>, este es un mensaje de advertencia.<br>
+  Por favor, utilice la aplicación de manera responsable al reservar turnos,
+  ya que las reservas sin intención de asistir pueden afectar la organización del trabajo.
+</p>
+  <button class="cerrar-btn" (click)="cerrarAdvertencia()">✖</button>
+</div>
+
+
 <!-- Toast para usuarios logueados -->
 <div class="toast toast-exito" *ngIf="mensajeExito && !mostrarFormulario">
   {{ mensajeExito }}

@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   turnoSeleccionado: any = null;
   mensajeError: string | null = null;
   mensajeExito: string | null = null;
+  mostrarAdvertencia: boolean = false;
 
   cortes = [
     { img: 'assets/corte1.jpg' },
@@ -44,7 +45,19 @@ export class HomeComponent implements OnInit {
     this.cargarTurnos();
     this.cargarAdminPerfil();
     this.inicializarFormulario();
+
+    // Mostrar advertencia solo una vez
+    const yaMostrado = localStorage.getItem('advertenciaMostrada');
+    if (!yaMostrado) {
+      this.mostrarAdvertencia = true;
+    }
   }
+
+  cerrarAdvertencia(): void {
+    this.mostrarAdvertencia = false;
+    localStorage.setItem('advertenciaMostrada', 'true');
+  }
+
 
   inicializarFormulario() {
     this.formularioAnonimo = this.fb.group({
