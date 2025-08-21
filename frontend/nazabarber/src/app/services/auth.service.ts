@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -53,5 +53,13 @@ export class AuthService {
 
   registrar(data: any) {
     return this.http.post(`${this.baseUrl}/registrar`, data);
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, nuevaContrasena: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password/${token}`, { nuevaContrasena });
   }
 }

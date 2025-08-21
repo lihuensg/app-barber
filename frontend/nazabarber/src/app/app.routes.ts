@@ -14,6 +14,9 @@ import { PostFeedComponent } from './pages/red-social/post-feed/post-feed.compon
 import { CrearPostComponent } from './pages/red-social/crear-post/crear-post.component';
 import { PostItemComponent } from './pages/red-social/post-item/post-item.component';
 
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+
 import { AdminGuard }   from './guards/admin.guard';
 import { UsuarioGuard } from './guards/usuario.guard';
 import { RedSocialGuard } from './guards/red-social.guard';
@@ -24,6 +27,8 @@ export const routes: Routes = [
   { path: '',          component: HomeComponent },
   { path: 'login',     component: LoginComponent },
   { path: 'registro',  component: RegistroComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
 
   /* panel USUARIO  (protección con UsuarioGuard) */
   {

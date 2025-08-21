@@ -29,8 +29,14 @@
       </div>
     </div>
 
+
     <button class="btn mt-3" type="submit" [disabled]="form.invalid">Entrar</button>
 
+     <div class="forgot-password">
+      <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    
     <div *ngIf="error" class="alert alert-danger mt-3">
       {{ error }}
     </div>

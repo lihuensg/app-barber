@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { login, registrar} from '../controllers/auth.controller.js';
 import { check } from 'express-validator';
 import { validarCampos } from '../middlewares/validarCampos.js';
+import { forgotPassword } from '../controllers/auth.controller.js';
+import { resetPassword } from '../controllers/auth.controller.js';
 
 const router = Router();
 
@@ -27,4 +29,6 @@ router.post(
   registrar
 );
 
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 export default router;
