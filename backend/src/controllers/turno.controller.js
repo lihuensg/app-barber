@@ -261,18 +261,31 @@ export const eliminarTurno = async (req, res) => {
   }
 };
 
-// ✅ ESTA ES LA QUE ARREGLA TU PROBLEMA (HOY LUNES NO APARECÍA)
 export const obtenerHistorialDeTurnos = async (req, res) => {
   try {
     const tz = "America/Argentina/Buenos_Aires";
 
-    // PASADOS: (fecha + hora) < ahora (en Argentina) y últimos 5 días
+    // 1) ✅ Marcar como cortado todo lo que ya pasó (según hora Argentina)
+    await Turno.update(
+      { estado: "cortado" },
+      {
+        where: {
+          estado: "reservado",
+          [Op.and]: [
+            sequelize.literal(`(fecha + hora) < (now() at time zone '${tz}')`),
+          ],
+        },
+      }
+    );
+
+    // 2) ✅ Pasados: solo cortados (si querés limitar a 5 días)
     const turnosPasados = await Turno.findAll({
       where: {
-        estado: { [Op.in]: ["reservado", "cortado"] },
+        estado: "cortado",
         [Op.and]: [
-          sequelize.literal(`(fecha::timestamp + hora) < (now() at time zone '${tz}')`),
-          sequelize.literal(`fecha >= ((now() at time zone '${tz}')::date - interval '5 days')::date`),
+          sequelize.literal(
+            `fecha >= ((now() at time zone '${tz}')::date - interval '5 days')::date`
+          ),
         ],
       },
       order: [
@@ -281,22 +294,12 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
       ],
     });
 
-    // Marcar como "cortado" los que estaban "reservado"
-    await Promise.all(
-      turnosPasados.map(async (t) => {
-        if (t.estado === "reservado") {
-          t.estado = "cortado";
-          await t.save();
-        }
-      })
-    );
-
-    // FUTUROS: (fecha + hora) >= ahora (en Argentina)
+    // 3) ✅ Futuros: reservados que todavía no pasaron (hora Argentina)
     const turnosFuturos = await Turno.findAll({
       where: {
         estado: "reservado",
         [Op.and]: [
-          sequelize.literal(`(fecha::timestamp + hora) >= (now() at time zone '${tz}')`),
+          sequelize.literal(`(fecha + hora) >= (now() at time zone '${tz}')`),
         ],
       },
       order: [
@@ -307,7 +310,7 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
 
     return res.status(200).json({ turnosPasados, turnosFuturos });
   } catch (error) {
-    console.error(error);
+    console.error("[historial] error:", error);
     return res.status(500).json({ error: "Error al obtener el historial de turnos" });
   }
 };
