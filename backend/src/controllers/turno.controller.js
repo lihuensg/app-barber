@@ -266,27 +266,32 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
   try {
     const tz = "America/Argentina/Buenos_Aires";
 
-    // 1) ✅ Marcar como cortado todo lo que ya pasó (según hora Argentina)
+    // "Hoy" y "Hora actual" calculadas en Postgres en zona AR
+    const hoySQL = `(now() at time zone '${tz}')::date`;
+    const horaAhoraSQL = `(now() at time zone '${tz}')::time`;
+
+    // 1) Marcar como cortado SOLO lo realmente pasado (por fecha y hora, sin timestamp sumado)
     await Turno.update(
       { estado: "cortado" },
       {
         where: {
           estado: "reservado",
-          [Op.and]: [
-            sequelize.literal(`(fecha + hora) < (now() at time zone '${tz}')`),
+          [Op.or]: [
+            // cualquier día anterior a hoy
+            sequelize.literal(`fecha < ${hoySQL}`),
+            // hoy pero con hora menor a la actual
+            sequelize.literal(`fecha = ${hoySQL} AND hora < ${horaAhoraSQL}`),
           ],
         },
       }
     );
 
-    // 2) ✅ Pasados: solo cortados (si querés limitar a 5 días)
+    // 2) Pasados: cortado (limitado a últimos 5 días si querés)
     const turnosPasados = await Turno.findAll({
       where: {
         estado: "cortado",
         [Op.and]: [
-          sequelize.literal(
-            `fecha >= ((now() at time zone '${tz}')::date - interval '5 days')::date`
-          ),
+          sequelize.literal(`fecha >= (${hoySQL} - interval '5 days')::date`),
         ],
       },
       order: [
@@ -295,12 +300,13 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
       ],
     });
 
-    // 3) ✅ Futuros: reservados que todavía no pasaron (hora Argentina)
+    // 3) Futuros: reservado y no pasado
     const turnosFuturos = await Turno.findAll({
       where: {
         estado: "reservado",
-        [Op.and]: [
-          sequelize.literal(`(fecha + hora) >= (now() at time zone '${tz}')`),
+        [Op.or]: [
+          sequelize.literal(`fecha > ${hoySQL}`),
+          sequelize.literal(`fecha = ${hoySQL} AND hora >= ${horaAhoraSQL}`),
         ],
       },
       order: [
@@ -315,6 +321,7 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
     return res.status(500).json({ error: "Error al obtener el historial de turnos" });
   }
 };
+
 
 export const cancelarTurno = async (req, res) => {
   const { id } = req.params;
