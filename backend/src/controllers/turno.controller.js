@@ -3,6 +3,7 @@ import { Usuario } from "../models/usuarios.js";
 import { enviarEmailConfirmacion } from "../utils/email.js";
 import { generarTurnosDeLaSemana } from "../utils/generarTurnos.js";
 import { Op } from "sequelize";
+import { sequelize } from "../database/database.js";
 import { enviarMensajeWhatsApp } from "../utils/callmebot.js";
 
 // Funciones auxiliares
