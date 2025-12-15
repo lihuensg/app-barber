@@ -264,40 +264,24 @@ export const eliminarTurno = async (req, res) => {
 // ✅ ESTA ES LA QUE ARREGLA TU PROBLEMA (HOY LUNES NO APARECÍA)
 export const obtenerHistorialDeTurnos = async (req, res) => {
   try {
-    const ahora = new Date();
-    const hoy = yyyymmddLocal(ahora);
+    const tz = "America/Argentina/Buenos_Aires";
 
-    const desdeDate = addDaysLocal(startOfDayLocal(ahora), -5);
-    const desde = yyyymmddLocal(desdeDate);
-
-    // Traigo todo lo relevante (últimos 5 días a futuro), y luego separo en JS
-    const turnos = await Turno.findAll({
+    // PASADOS: (fecha + hora) < ahora (en Argentina) y últimos 5 días
+    const turnosPasados = await Turno.findAll({
       where: {
-        // Incluyo reservado y cortado para no “perderlos”
         estado: { [Op.in]: ["reservado", "cortado"] },
-        fecha: { [Op.gte]: desde },
+        [Op.and]: [
+          sequelize.literal(`(fecha::timestamp + hora) < (now() at time zone '${tz}')`),
+          sequelize.literal(`fecha >= ((now() at time zone '${tz}')::date - interval '5 days')::date`),
+        ],
       },
       order: [
-        ["fecha", "ASC"],
-        ["hora", "ASC"],
+        ["fecha", "DESC"],
+        ["hora", "DESC"],
       ],
     });
 
-    const turnosPasados = [];
-    const turnosFuturos = [];
-
-    for (const turno of turnos) {
-      const dt = turnoToLocalDateTime(turno);
-
-      if (dt < ahora) {
-        turnosPasados.push(turno);
-      } else {
-        // esto incluye HOY aunque sea el mismo minuto/segundo
-        turnosFuturos.push(turno);
-      }
-    }
-
-    // Si querés seguir marcando como cortado los pasados (opcional)
+    // Marcar como "cortado" los que estaban "reservado"
     await Promise.all(
       turnosPasados.map(async (t) => {
         if (t.estado === "reservado") {
@@ -307,9 +291,19 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
       })
     );
 
-    // ordeno como vos querías
-    turnosPasados.sort((a, b) => (a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : a.hora < b.hora ? 1 : -1));
-    turnosFuturos.sort((a, b) => (a.fecha > b.fecha ? 1 : a.fecha < b.fecha ? -1 : a.hora > b.hora ? 1 : -1));
+    // FUTUROS: (fecha + hora) >= ahora (en Argentina)
+    const turnosFuturos = await Turno.findAll({
+      where: {
+        estado: "reservado",
+        [Op.and]: [
+          sequelize.literal(`(fecha::timestamp + hora) >= (now() at time zone '${tz}')`),
+        ],
+      },
+      order: [
+        ["fecha", "ASC"],
+        ["hora", "ASC"],
+      ],
+    });
 
     return res.status(200).json({ turnosPasados, turnosFuturos });
   } catch (error) {
