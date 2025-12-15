@@ -6,7 +6,6 @@ import { Op } from "sequelize";
 import { enviarMensajeWhatsApp } from "../utils/callmebot.js";
 
 // Funciones auxiliares
-
 function sumarMinutos(horaStr, minutos) {
   const [h, m] = horaStr.split(":").map(Number);
   const date = new Date(0, 0, 0, h, m);
@@ -24,20 +23,46 @@ function hayConflicto(turnos, horaNueva) {
 }
 
 function formatearFechaArg(fechaStr) {
-  // fechaStr viene tipo "2025-08-12" (YYYY-MM-DD)
-  const [anio, mes, dia] = fechaStr.split('-');
+  const [anio, mes, dia] = fechaStr.split("-");
   return `${dia}/${mes}/${anio}`;
+}
+
+// ✅ Helpers nuevos (evitan UTC vs local)
+function yyyymmddLocal(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function startOfDayLocal(d = new Date()) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+}
+
+function addDaysLocal(d, days) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + days);
+  return x;
+}
+
+// Convierte (fecha DATEONLY + hora TIME) => Date local
+function turnoToLocalDateTime(turno) {
+  const fecha = typeof turno.fecha === "string" ? turno.fecha : yyyymmddLocal(new Date(turno.fecha));
+  const hora = typeof turno.hora === "string" ? turno.hora : String(turno.hora);
+  const [Y, M, D] = fecha.split("-").map(Number);
+
+  // hora puede venir "HH:MM:SS" o "HH:MM"
+  const [hh, mm, ss] = hora.split(":").map((v) => Number(v || 0));
+  return new Date(Y, M - 1, D, hh, mm, ss || 0, 0);
 }
 
 export const reservarTurnoAnonimo = async (req, res) => {
   const { fecha, hora, nombre, email, telefono } = req.body;
 
-  // Obtener IP del cliente
   const xForwardedFor = req.headers["x-forwarded-for"];
   let ip;
 
   if (xForwardedFor) {
-    // Puede ser una lista de IPs, tomá la primera
     ip = xForwardedFor.split(",")[0].trim();
   } else if (req.connection && req.connection.remoteAddress) {
     ip = req.connection.remoteAddress;
@@ -45,7 +70,6 @@ export const reservarTurnoAnonimo = async (req, res) => {
     ip = req.ip || null;
   }
 
-  // Limpiar prefijo IPv6 ::ffff:
   if (ip && ip.startsWith("::ffff:")) {
     ip = ip.substring(7);
   }
@@ -66,14 +90,11 @@ export const reservarTurnoAnonimo = async (req, res) => {
     turno.ip = ip;
     await turno.save();
 
-    // Solo enviar el mail si se proporcionó
     if (email && email.trim() !== "") {
       const fechaArg = formatearFechaArg(fecha);
-
       await enviarEmailConfirmacion(email, fechaArg, hora);
     }
 
-    // Obtener teléfono del admin desde la base
     const admin = await Usuario.findOne({
       where: { rol: "admin" },
       attributes: ["telefono"],
@@ -82,8 +103,8 @@ export const reservarTurnoAnonimo = async (req, res) => {
     if (!admin || !admin.telefono) {
       console.warn("No se encontró teléfono de admin para enviar WhatsApp");
     } else {
-      const numeroAdmin = admin.telefono.replace(/\D/g, ""); // limpiar caracteres no numéricos
-      const numeroFormateado = `549${numeroAdmin}`; // agregá código país si es necesario
+      const numeroAdmin = admin.telefono.replace(/\D/g, "");
+      const numeroFormateado = `549${numeroAdmin}`;
       const fechaArg = formatearFechaArg(fecha);
       const mensajeWhatsApp = `📅 Nueva reserva: ${nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Mail: ${
         email || "No proporcionado"
@@ -114,18 +135,14 @@ export const reservarTurnoCliente = async (req, res) => {
       attributes: ["nombre", "email", "telefono"],
     });
 
-    // Asignar el turno al usuario logueado
     turno.estado = "reservado";
     turno.cliente_id = clienteId;
-
-    // Limpiar campos manuales por si fueron usados antes
     turno.nombre_manual = cliente.nombre;
     turno.email_manual = cliente.email;
     turno.telefono = cliente.telefono;
 
     await turno.save();
 
-    // Obtener teléfono del admin
     const admin = await Usuario.findOne({
       where: { rol: "admin" },
       attributes: ["telefono"],
@@ -135,7 +152,9 @@ export const reservarTurnoCliente = async (req, res) => {
       const numeroAdmin = admin.telefono.replace(/\D/g, "");
       const numeroFormateado = `549${numeroAdmin}`;
       const fechaArg = formatearFechaArg(fecha);
-      const mensajeWhatsApp = `📅 Nueva reserva: ${cliente.nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Teléfono: ${cliente.telefono || 'No informado'}, Email: ${cliente.email || 'No informado'}`;
+      const mensajeWhatsApp = `📅 Nueva reserva: ${cliente.nombre}, Fecha: ${fechaArg}, Hora: ${hora}, Teléfono: ${
+        cliente.telefono || "No informado"
+      }, Email: ${cliente.email || "No informado"}`;
       await enviarMensajeWhatsApp(numeroFormateado, mensajeWhatsApp);
     } else {
       console.warn("No se encontró teléfono de admin para enviar WhatsApp");
@@ -242,68 +261,21 @@ export const eliminarTurno = async (req, res) => {
   }
 };
 
+// ✅ ESTA ES LA QUE ARREGLA TU PROBLEMA (HOY LUNES NO APARECÍA)
 export const obtenerHistorialDeTurnos = async (req, res) => {
   try {
     const ahora = new Date();
-    const cincoDiasAtras = new Date();
-    cincoDiasAtras.setDate(ahora.getDate() - 5);
+    const hoy = yyyymmddLocal(ahora);
 
-    // Turnos pasados: desde 5 días atrás hasta justo antes de ahora
-    const turnosPasados = await Turno.findAll({
+    const desdeDate = addDaysLocal(startOfDayLocal(ahora), -5);
+    const desde = yyyymmddLocal(desdeDate);
+
+    // Traigo todo lo relevante (últimos 5 días a futuro), y luego separo en JS
+    const turnos = await Turno.findAll({
       where: {
-        estado: "reservado",
-        [Op.or]: [
-          {
-            fecha: {
-              [Op.between]: [
-                cincoDiasAtras.toISOString().split("T")[0],
-                ahora.toISOString().split("T")[0],
-              ],
-            },
-            hora: {
-              [Op.lt]: ahora.toTimeString().split(" ")[0],
-            },
-          },
-          {
-            fecha: {
-              [Op.lt]: ahora.toISOString().split("T")[0],
-            },
-          },
-        ],
-      },
-      order: [
-        ["fecha", "DESC"],
-        ["hora", "DESC"],
-      ],
-    });
-
-    // Actualizar estado de turnos pasados a 'cortado'
-    await Promise.all(
-      turnosPasados.map(async (turno) => {
-        if (turno.estado === "reservado") {
-          turno.estado = "cortado";
-          await turno.save();
-        }
-      })
-    );
-
-    // Turnos futuros: desde ahora en adelante
-    const turnosFuturos = await Turno.findAll({
-      where: {
-        estado: "reservado",
-        [Op.or]: [
-          {
-            fecha: ahora.toISOString().split("T")[0],
-            hora: {
-              [Op.gte]: ahora.toTimeString().split(" ")[0],
-            },
-          },
-          {
-            fecha: {
-              [Op.gt]: ahora.toISOString().split("T")[0],
-            },
-          },
-        ],
+        // Incluyo reservado y cortado para no “perderlos”
+        estado: { [Op.in]: ["reservado", "cortado"] },
+        fecha: { [Op.gte]: desde },
       },
       order: [
         ["fecha", "ASC"],
@@ -311,10 +283,38 @@ export const obtenerHistorialDeTurnos = async (req, res) => {
       ],
     });
 
-    res.status(200).json({ turnosPasados, turnosFuturos });
+    const turnosPasados = [];
+    const turnosFuturos = [];
+
+    for (const turno of turnos) {
+      const dt = turnoToLocalDateTime(turno);
+
+      if (dt < ahora) {
+        turnosPasados.push(turno);
+      } else {
+        // esto incluye HOY aunque sea el mismo minuto/segundo
+        turnosFuturos.push(turno);
+      }
+    }
+
+    // Si querés seguir marcando como cortado los pasados (opcional)
+    await Promise.all(
+      turnosPasados.map(async (t) => {
+        if (t.estado === "reservado") {
+          t.estado = "cortado";
+          await t.save();
+        }
+      })
+    );
+
+    // ordeno como vos querías
+    turnosPasados.sort((a, b) => (a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : a.hora < b.hora ? 1 : -1));
+    turnosFuturos.sort((a, b) => (a.fecha > b.fecha ? 1 : a.fecha < b.fecha ? -1 : a.hora > b.hora ? 1 : -1));
+
+    return res.status(200).json({ turnosPasados, turnosFuturos });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al obtener el historial de turnos" });
+    return res.status(500).json({ error: "Error al obtener el historial de turnos" });
   }
 };
 
